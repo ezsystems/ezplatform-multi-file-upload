@@ -1,0 +1,43 @@
+/**
+ * Copyright (C) eZ Systems AS. All rights reserved.
+ * For full copyright and license information view LICENSE file distributed with this source code.
+ */
+
+.mfu-popup-opened .mfu-popup-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+}
+
+.ez-view-mfuuploadpopupview.ezs-popupview {
+    min-height: auto;
+    max-height: 90vh;
+    width: 50vw;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__list-container {
+    padding: 0 1rem 1rem;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__list-title {
+    margin: 0;
+    line-height: 3rem;
+    padding: 0 1rem;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__list-wrapper {
+    overflow-y: auto;
+    max-height: 40vh;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__files-list {
+    padding: .375rem;
+    margin: 0;
+}
+
+.ez-view-mfuuploadpopupview .ez-view-mfufileitemview + .ez-view-mfufileitemview {
+    border-top: .125rem solid #dfdfdf;
+}

@@ -2,4 +2,51 @@ system:
     default:
         yui:
             modules:
-
+                mfu-fileupload-plugin:
+                    requires:
+                        - 'plugin'
+                        - 'mfu-subitembox-view'
+                        - 'ez-contenttypemodel'
+                        - 'ez-contentinfomodel'
+                        - 'ez-viewservicebaseplugin'
+                        - 'ez-pluginregistry'
+                    dependencyOf:
+                        - 'ez-locationviewview'
+                        - 'ez-locationviewviewservice'
+                    path: %multifile_upload.public_dir%/js/plugins/mfu-fileupload-plugin.js
+                mfu-subitembox-view:
+                    requires:
+                        - 'mfu-uploadform-view'
+                        - 'mfu-uploadpopup-view'
+                        - 'ez-subitemboxview'
+                        - 'mfusubitemboxview-ez-template'
+                    path: %multifile_upload.public_dir%/js/views/mfu-subitembox-view.js
+                mfusubitemboxview-ez-template:
+                    type: 'template'
+                    path: %multifile_upload.public_dir%/templates/subitem-box.hbt
+                mfu-uploadform-view:
+                    requires:
+                        - 'ez-templatebasedview'
+                        - 'mfuuploadformview-ez-template'
+                    path: %multifile_upload.public_dir%/js/views/mfu-uploadform-view.js
+                mfuuploadformview-ez-template:
+                    type: 'template'
+                    path: %multifile_upload.public_dir%/templates/upload-form.hbt
+                mfu-uploadpopup-view:
+                    requires:
+                        - 'mfu-uploadform-view'
+                        - 'mfu-fileitem-view'
+                        - 'ezs-popupview'
+                        - 'mfuuploadpopupview-ez-template'
+                    path: %multifile_upload.public_dir%/js/views/mfu-uploadpopup-view.js
+                mfuuploadpopupview-ez-template:
+                    type: 'template'
+                    path: %multifile_upload.public_dir%/templates/upload-popup.hbt
+                mfu-fileitem-view:
+                    requires:
+                        - 'ez-templatebasedview'
+                        - 'mfufileitemview-ez-template'
+                    path: %multifile_upload.public_dir%/js/views/mfu-fileitem-view.js
+                mfufileitemview-ez-template:
+                    type: 'template'
+                    path: %multifile_upload.public_dir%/templates/file-item.hbt

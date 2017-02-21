@@ -1,0 +1,11 @@
+<h2 class="ez-subitembox-title">
+    <a href="#" class="ez-collapse-toggle">{{ translate 'subitem.subitems' 'subitem' }} ({{ location.childCount }})</a>
+    <ul class="ez-subitembox-viewlist">
+    {{#each viewsInfo}}
+        <li class="ez-subitembox-viewlist-item{{#if selected}} is-view-selected{{/if}}"><a href="#" class="ez-switch-subitemview ez-font-icon" data-view-identifier="{{identifier}}" title="{{ name }}"></a></li>
+    {{/each}}
+    </ul>
+</h2>
+<div class="ez-subitembox-content ez-expandable-area">
+    <div class="mfu-box__subitem-boxes"></div>
+</div>

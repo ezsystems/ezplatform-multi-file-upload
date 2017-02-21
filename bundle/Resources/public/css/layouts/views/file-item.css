@@ -1,0 +1,85 @@
+/**
+ * Copyright (C) eZ Systems AS. All rights reserved.
+ * For full copyright and license information view LICENSE file distributed with this source code.
+ */
+
+.ez-view-mfufileitemview * {
+    box-sizing: border-box;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon {
+    display: inline-block;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-image {
+    width: 2.6rem;
+    height: 2rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-file {
+    width: 1.49rem;
+    height: 2rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-video {
+    width: 2.6rem;
+    height: 2rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-pdf {
+    width: 1.83rem;
+    height: 2rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-abort {
+    width: .79rem;
+    height: 1rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-remove {
+    width: .79rem;
+    height: 1rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__icon-edit {
+    width: .86rem;
+    height: 1rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__meta {
+    display: flex;
+    align-items: center;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__thumb {
+    flex: 1 1 5%;
+    min-width: 2.6rem;
+    height: 3rem;
+    margin: 0 1rem 0 .5rem;
+    display: flex;
+    align-items: center;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__info {
+    flex: 1 1 75%;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__options {
+    flex: 1 1 20%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__option {
+    border: 0;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__progress-bar {
+    border: 1px solid #ff7345;
+    height: 1rem;
+    width: 12.5rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__progress-value {
+    height: 100%;
+}

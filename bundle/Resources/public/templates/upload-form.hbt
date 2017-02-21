@@ -1,0 +1,19 @@
+<svg class="mfu-icon">
+    <defs>
+        <symbol id="icon-mfu-upload" viewBox="0 0 26 28">
+            <title>File upload</title>
+            <path d="M20 23q0-0.406-0.297-0.703t-0.703-0.297-0.703 0.297-0.297 0.703 0.297 0.703 0.703 0.297 0.703-0.297 0.297-0.703zM24 23q0-0.406-0.297-0.703t-0.703-0.297-0.703 0.297-0.297 0.703 0.297 0.703 0.703 0.297 0.703-0.297 0.297-0.703zM26 19.5v5q0 0.625-0.438 1.062t-1.062 0.438h-23q-0.625 0-1.062-0.438t-0.438-1.062v-5q0-0.625 0.438-1.062t1.062-0.438h6.672q0.328 0.875 1.102 1.437t1.727 0.562h4q0.953 0 1.727-0.562t1.102-1.437h6.672q0.625 0 1.062 0.438t0.438 1.062zM20.922 9.375q-0.266 0.625-0.922 0.625h-4v7q0 0.406-0.297 0.703t-0.703 0.297h-4q-0.406 0-0.703-0.297t-0.297-0.703v-7h-4q-0.656 0-0.922-0.625-0.266-0.609 0.219-1.078l7-7q0.281-0.297 0.703-0.297t0.703 0.297l7 7q0.484 0.469 0.219 1.078z"></path>
+        </symbol>
+    </defs>
+</svg>
+<div class="mfu-form__container">
+    <h3 class="mfu-form__call-to-action">Drag your files here</h3>
+    <label class="mfu-form__other-action" for="mfu-files">or if you prefer</label>
+    <button class="mfu-form___btn--select-files">
+        <span class="mfu-form__btn-label--select-files">
+            <svg class="mfu-form__icon-upload"><use xlink:href="#icon-mfu-upload"></use></svg> Choose files
+        </span>
+    </button>
+    <input class="mfu-form__input mfu--hidden" id="mfu-files" type="file" name="files[]" multiple />
+    <small class="mfu-form__limit-info">(Max file size 2MB)</small>
+</div>
