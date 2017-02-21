@@ -1,0 +1,18 @@
+<phpunit
+        backupGlobals="false"
+        backupStaticAttributes="true"
+        bootstrap="vendor/autoload.php"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        colors="false"
+>
+    <testsuites>
+        <testsuite name="ezplatform-ee-multi-file-upload\bundle">
+            <directory>tests/bundle/</directory>
+        </testsuite>
+        <testsuite name="ezplatform-ee-multi-file-upload\lib">
+            <directory>tests/lib/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

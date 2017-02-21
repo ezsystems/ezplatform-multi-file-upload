@@ -1,0 +1,31 @@
+{
+    "name": "ezsystems/ezplatform-ee-multi-file-upload",
+    "description": "Multi File Upload for eZ Platform Enterprise Edition",
+    "authors": [
+        {
+        "name": "eZ Systems",
+        "email": "dev-team@ez.no"
+        }
+    ],
+    "license": "TTL-2.0",
+    "autoload": {
+        "psr-4": {
+            "EzSystems\\MultiFileUpload\\": "lib/",
+            "EzSystems\\MultiFileUploadBundle\\": "bundle/",
+            "EzSystems\\Tests\\MultiFileUpload\\": "tests/lib/",
+            "EzSystems\\Tests\\MultiFileUploadBundle\\": "tests/bundle/"
+        }
+    },
+    "require": {
+        "ezsystems/studio-ui-bundle": "^1.8",
+        "ezsystems/ezpublish-kernel": "^6.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.7"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
