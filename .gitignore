@@ -1,0 +1,6 @@
+node_modules/
+.php_cs.cache
+composer.lock
+composer.phar
+*-coverage.js
+/vendor/
