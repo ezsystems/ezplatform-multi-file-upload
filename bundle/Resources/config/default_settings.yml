@@ -1,0 +1,27 @@
+parameters:
+    ez_systems.multifile_upload.location_mappings: []
+
+    ez_systems.multifile_upload.default_mappings:
+        - { mime_type: image/jpeg, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/jpg, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/pjpeg, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/pjpg, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/pjpg, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/png, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/bmp, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/gif, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/tiff, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/x-icon, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/svg+xml, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: image/webp, content_type_identifier: image, content_field_identifier: image }
+        - { mime_type: application/msword, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/vnd.ms-excel, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/vnd.ms-powerpoint, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/vnd.openxmlformats-officedocument.presentationml.presentation, content_type_identifier: file, content_field_identifier: file }
+        - { mime_type: application/pdf, content_type_identifier: file, content_field_identifier: file }
+
+    ez_systems.multifile_upload.fallback_content_type:
+        content_type_identifier: file
+        content_field_identifier: file
