@@ -19,16 +19,25 @@ class ContentTypeMappings
     /** @var array */
     protected $fallbackContentType = [];
 
+    /** @var int */
+    protected $maxFileSize = 0;
+
     /**
      * @param array $locationMappings
      * @param array $defaultMappings
      * @param array $fallbackContentType
+     * @param int $maxFileSize
      */
-    public function __construct(array $locationMappings, array $defaultMappings, array $fallbackContentType)
-    {
+    public function __construct(
+        array $locationMappings,
+        array $defaultMappings,
+        array $fallbackContentType,
+        $maxFileSize
+    ) {
         $this->locationMappings = $locationMappings;
         $this->defaultMappings = $defaultMappings;
         $this->fallbackContentType = $fallbackContentType;
+        $this->maxFileSize = $maxFileSize;
     }
 
     /**
@@ -42,11 +51,12 @@ class ContentTypeMappings
             'locationMappings' => [],
             'defaultMappings' => [],
             'fallbackContentType' => $this->buildFallbackContentTypeStructure($this->fallbackContentType),
+            'maxFileSize' => $this->maxFileSize,
         ];
 
         foreach ($this->locationMappings as $locationIdentifier => $locationConfiguration) {
             $structure['locationMappings'][$locationIdentifier] = [
-                'locationId' => $locationConfiguration['location_id'],
+                'contentTypeIdentifier' => $locationConfiguration['content_type_identifier'],
                 'mimeTypeFilter' => $locationConfiguration['mime_type_filter'],
                 'mappings' => [],
             ];

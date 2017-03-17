@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
                     ->info('Let\'s you assign mappings binded to location')
                     ->prototype('array')
                         ->children()
-                            ->integerNode('location_id')
+                            ->scalarNode('content_type_identifier')
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
@@ -89,6 +89,10 @@ class Configuration implements ConfigurationInterface
                             ->defaultNull()
                         ->end()
                     ->end()
+                ->end()
+                ->integerNode('max_file_size')
+                    ->defaultValue(64000000) // 64MB
+                    ->cannotBeEmpty()
                 ->end()
             ->end()
         ;
