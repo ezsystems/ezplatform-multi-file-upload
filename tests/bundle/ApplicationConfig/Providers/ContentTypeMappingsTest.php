@@ -13,7 +13,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
     {
         $locationMappings = [
             [
-                'location_id' => 1,
+                'content_type_identifier' => 1,
                 'mime_type_filter' => [
                     'video/*',
                     'image/*',
@@ -32,7 +32,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             [
-                'location_id' => 3,
+                'content_type_identifier' => 3,
                 'mime_type_filter' => [
                     'video/*',
                 ],
@@ -61,13 +61,19 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
             'content_type_identifier' => 'file',
             'content_field_identifier' => 'file',
         ];
+        $maxFileSize = 64000000;
 
-        $contentTypeMappingsConfig = new ContentTypeMappings($locationMappings, $defaultMappings, $fallbackContentType);
+        $contentTypeMappingsConfig = new ContentTypeMappings(
+            $locationMappings,
+            $defaultMappings,
+            $fallbackContentType,
+            $maxFileSize
+        );
 
         $expectedArray = [
             'locationMappings' => [
                 [
-                    'locationId' => 1,
+                    'contentTypeIdentifier' => 1,
                     'mimeTypeFilter' => [
                         'video/*',
                         'image/*',
@@ -86,7 +92,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                     ],
                 ],
                 [
-                    'locationId' => 3,
+                    'contentTypeIdentifier' => 3,
                     'mimeTypeFilter' => [
                         'video/*',
                     ],
@@ -115,6 +121,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 'contentTypeIdentifier' => 'file',
                 'contentFieldIdentifier' => 'file',
             ],
+            'maxFileSize' => 64000000,
         ];
 
         $this->assertArraySubset($contentTypeMappingsConfig->getConfig(), $expectedArray);
@@ -128,8 +135,9 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
             'content_type_identifier' => null,
             'content_field_identifier' => null,
         ];
+        $maxFileSize = null;
 
-        $contentTypeMappingsConfig = new ContentTypeMappings($locationMappings, $defaultMappings, $fallbackContentType);
+        $contentTypeMappingsConfig = new ContentTypeMappings($locationMappings, $defaultMappings, $fallbackContentType, $maxFileSize);
 
         $expectedArray = [
             'locationMappings' => [],
@@ -138,6 +146,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 'contentTypeIdentifier' => null,
                 'contentFieldIdentifier' => null,
             ],
+            'maxFileSize' => null
         ];
 
         $this->assertArraySubset($contentTypeMappingsConfig->getConfig(), $expectedArray);

@@ -54,6 +54,10 @@ class EzSystemsMultiFileUploadExtension extends ConfigurableExtension implements
         if (isset($config['fallback_content_type'])) {
             $container->setParameter('ez_systems.multifile_upload.fallback_content_type', $config['fallback_content_type']);
         }
+
+        if (isset($config['max_file_size'])) {
+            $container->setParameter('ez_systems.multifile_upload.max_file_size', $config['max_file_size']);
+        }
     }
 
     /**
