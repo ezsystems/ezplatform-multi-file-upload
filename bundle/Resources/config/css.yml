@@ -2,4 +2,11 @@ system:
     default:
         css:
             files:
-
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/layouts/general.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/layouts/views/file-item.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/layouts/views/upload-form.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/layouts/views/upload-popup.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/themes/general.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/themes/views/file-item.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/themes/views/upload-form.css'
+                - '@EzSystemsMultiFileUploadBundle/Resources/public/css/themes/views/upload-popup.css'

@@ -1,0 +1,8 @@
+<button class="ezs-popupview__btn--close mfu-popup__btn--close"></button>
+<div class="ezs-popupview__content mfu-popup__content">{{ content }}</div>
+<div class="mfu-popup__list-container">
+    <h3 class="mfu-popup__list-title"></h3>
+    <div class="mfu-popup__list-wrapper">
+        <ul class="mfu-popup__files-list"></ul>
+    </div>
+</div>

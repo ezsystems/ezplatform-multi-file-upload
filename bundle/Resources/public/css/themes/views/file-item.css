@@ -1,0 +1,36 @@
+/**
+ * Copyright (C) eZ Systems AS. All rights reserved.
+ * For full copyright and license information view LICENSE file distributed with this source code.
+ */
+
+.ez-view-mfufileitemview .mfu-file-item__icon {
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__meta {
+    color: #666;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__option {
+    background: none;
+    cursor: pointer;
+    transition: .3s color cubic-bezier(.25,.8,.25,1);
+}
+
+.ez-view-mfufileitemview .mfu-file-item__option:hover,
+.ez-view-mfufileitemview .mfu-file-item__option:focus {
+    color: #4c4c4c;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__progress-bar {
+    background: transparent;
+    border-radius: .25rem;
+}
+
+.ez-view-mfufileitemview .mfu-file-item__progress-value {
+    background: #ff7345;
+    border-radius: .25rem;
+    transition: width .2s linear;
+}

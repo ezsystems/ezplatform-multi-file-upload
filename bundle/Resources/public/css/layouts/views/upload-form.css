@@ -1,0 +1,44 @@
+/**
+ * Copyright (C) eZ Systems AS. All rights reserved.
+ * For full copyright and license information view LICENSE file distributed with this source code.
+ */
+
+.ez-view-mfuuploadformview .mfu-icon {
+    display: none;
+}
+
+.ez-view-mfuuploadformview .mfu-form__container {
+    padding: 1rem;
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    border: .125rem dashed #d3d3d3;
+    align-items: center;
+    position: relative;
+}
+
+.ez-view-mfuuploadformview .mfu-form__icon-upload {
+    display: inline-block;
+    width: .9287109375rem;
+    height: 1rem;
+    margin-right: .375rem;
+}
+
+.ez-view-mfuuploadformview .mfu-form__call-to-action {
+    margin: 0;
+}
+
+.ez-view-mfuuploadformview .mfu-form__limit-info,
+.ez-view-mfuuploadformview .mfu-form__other-action {
+    margin: .75rem 0;
+}
+
+.ez-platformui-app .ez-view-mfuuploadformview .mfu-form___btn--select-files {
+    padding: .5rem 2rem;
+    border: 1px solid #3fb499;
+}
+
+.ez-view-mfuuploadformview .mfu-form__btn-label--select-files {
+    display: flex;
+    align-items: center;
+}
