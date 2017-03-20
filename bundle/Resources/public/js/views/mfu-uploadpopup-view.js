@@ -198,9 +198,7 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
                 return;
             }
 
-            const files = this.get('uploadedFiles').filter(file => {
-                return file.added !== targetFile.added || file.blob.name !== targetFile.blob.name;
-            });
+            const files = this.get('uploadedFiles').filter(this._excludeFile.bind(this, targetFile));
 
             this._set('uploadedFiles', files);
 
@@ -208,6 +206,18 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
                 this._hidePopup();
             }
         },
+
+        /**
+         * Does the comparison between a provided file hash and a file hash from an array.
+         * Returns truthy when file hashes don't have the same file names and time added info.
+         *
+         * @method _excludeFile
+         * @protected
+         * @param file {Object} a file hash of file to be compared against
+         * @param item {Object} a file hash of file from an array to be compared with
+         * @return {Boolean}
+         */
+        _excludeFile: (file, item) => !(file.added === item.added && file.blob.name === item.blob.name),
 
         /**
          * Hides popup
@@ -268,9 +278,8 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
          */
         _removeFileFromUploadedFiles: function (event) {
             const uploadedFiles = this.get('uploadedFiles');
-            const file = event.target.get('file');
 
-            this._set('uploadedFiles', uploadedFiles.filter(item => item.added !== file.added && item.blob.name !== file.blob.name));
+            this._set('uploadedFiles', uploadedFiles.filter(this._excludeFile.bind(this, event.target.get('file'))));
         },
 
         /**
