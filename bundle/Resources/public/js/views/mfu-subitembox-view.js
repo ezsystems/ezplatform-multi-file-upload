@@ -104,6 +104,22 @@ YUI.add('mfu-subitembox-view', function (Y) {
             return false;
         },
 
+        /**
+         * Updates sub items count label
+         *
+         * @method updateSubItemsCountLabel
+         *
+         * @param itemsCount {String|Number} items count
+         * @return {mfu.SubitemBoxView} the view itself
+         */
+        updateSubItemsCountLabel: function (itemsCount) {
+            var label = this.get('container').one('.ez-subitembox-title > .ez-collapse-toggle');
+
+            label.setHTML(label.getHTML().replace(/\([^\]]+\)/g, `(${itemsCount})`));
+
+            return this;
+        },
+
         destructor: function () {
             [this.get('uploadForm'), this.get('uploadPopup')].forEach(view => {
                 view.removeTarget(this);

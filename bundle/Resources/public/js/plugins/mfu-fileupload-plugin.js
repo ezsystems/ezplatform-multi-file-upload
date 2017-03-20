@@ -85,9 +85,11 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          */
         _refreshSubItemBoxViewItems: function () {
             const box = this.get('subitemBoxView');
+            const subItemListView = box._getSubitemView(box.get('subitemViewIdentifier'));
 
-            box._getSubitemView(box.get('subitemViewIdentifier'))._refresh();
-        }
+            subItemListView._refresh();
+            subItemListView.after('loadingChange', () => box.updateSubItemsCountLabel(subItemListView.get('items').length));
+        },
     }, {
         NS: VIEW_PLUGIN_NAME,
         ATTRS: {
@@ -125,6 +127,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
 
             host.on('mfuFileItemView:mfuUploadFile', this._initFileUpload, this);
             host.on('mfuFileItemView:mfuDeleteFile', this._deleteContent, this);
+            host.on('mfuUploadFormView:mfuGetAllowedMimeTypes', this._setAllowedMimeTypesInfo, this);
         },
 
         /**
@@ -139,6 +142,34 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
             this._set('contentTypeDefaultMappings', config.defaultMappings);
             this._set('defaultContentType', config.fallbackContentType);
             this._set('contentTypeByLocationMappings', config.locationMappings);
+        },
+
+        /**
+         * Retrieves information about allowed mime types
+         *
+         * @method _setAllowedMimeTypesInfo
+         * @protected
+         * @param event {Object} event facade
+         * @param event.callback {Function} a callback where allowed mime types are passed into
+         */
+        _setAllowedMimeTypesInfo: function (event) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMappings = this._findLocationMappings(contentTypeIdentifier);
+            const allowedMimeTypes = locationMappings ? locationMappings.mimeTypeFilter : [];
+
+            event.callback(allowedMimeTypes);
+        },
+
+        /**
+         * Finds a location mappings based on provided location content type identifier
+         *
+         * @method _findLocationMappings
+         * @protected
+         * @param identifier {String} location content type identifier
+         * @return {Object}
+         */
+        _findLocationMappings: function (identifier) {
+            return this.get('contentTypeByLocationMappings').find(item => item.contentTypeIdentifier === identifier);
         },
 
         /**
@@ -159,6 +190,12 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         _initFileUpload: function (event) {
             const capi = this.get('host').get('capi');
             const data = {file: event.file};
+
+            if (!this._checkFileTypeAllowed(event.file)) {
+                event.fileTypeNotAllowedCallback();
+
+                return;
+            }
 
             this._detectContentType(event.file)
                 .then(this._createContentStruct.bind(this, data))
@@ -181,6 +218,25 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         },
 
         /**
+         * Checks if a provided file has an allowed file type
+         *
+         * @method _checkFileTypeAllowed
+         * @protected
+         * @param file {File} File object
+         * @return {Boolean} true if file type is allowed
+         */
+        _checkFileTypeAllowed: function (file) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMapping = this._findLocationMappings(contentTypeIdentifier);
+
+            if (!locationMapping) {
+                return true;
+            }
+
+            return !!locationMapping.mappings.find(item => item.mimeType === file.type);
+        },
+
+        /**
          * Detects a content type based on file mime type
          *
          * @method _detectContentType
@@ -189,21 +245,45 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @return {Promise}
          */
         _detectContentType: function (file) {
-            const contentTypeMapping = this.get('contentTypeDefaultMappings').find(item => item.mimeType === file.type) ||
-                this.get('defaultContentType');
-
-            this._detectedContentTypeMapping = contentTypeMapping;
+            this._detectedContentTypeMapping = this._detectContentTypeMapping(file);
 
             return new Promise((resolve, reject) => {
                 this.get('host')
                     .get('capi')
                     .getContentTypeService()
                     .loadContentTypeByIdentifier(
-                        contentTypeMapping.contentTypeIdentifier,
+                        this._detectedContentTypeMapping.contentTypeIdentifier,
                         this._resolvePromiseCallback.bind(this, resolve, reject)
                     );
             });
         },
+
+        /**
+         * Detects a content type based on a mapping provided by backend
+         *
+         * @method _detectContentTypeMapping
+         * @protected
+         * @param file {File} File object
+         * @return {Object} detected content type mapping
+         */
+        _detectContentTypeMapping: function (file) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMapping = this._findLocationMappings(contentTypeIdentifier);
+            const mappings = locationMapping ? locationMapping.mappings : this.get('contentTypeDefaultMappings');
+
+            return this._findMimeTypeMapping(mappings, file) || this.get('defaultContentType');
+        },
+
+        /**
+         * Finds an element that has the same mapped file mimeType as a provided file type
+         *
+         * @method _findMimeTypeMapping
+         * @protected
+         * @param mappings {Array} list of mappings
+         * @param file {File} File object
+         * @return {Boolean}
+         */
+        _findMimeTypeMapping: (mappings, file) => mappings.find(item => item.mimeType === file.type),
 
         /**
          * Resolves/rejects a promise
@@ -444,10 +524,11 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
              * Uploaded files content type mappings by location
              *
              * @attibute contentTypeByLocationMappings
-             * @type {Object}
+             * @type {Array}
              * @readOnly
              */
             contentTypeByLocationMappings: {
+                value: [],
                 readOnly: true
             },
 

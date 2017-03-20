@@ -22,6 +22,8 @@ YUI.add('mfu-fileitem-view', function (Y) {
     const SELECTOR_UPLOAD_STATUS = '.mfu-file-item__upload-status';
     const SELECTOR_STATUS_DONE = '.mfu-file-item__upload-state--done';
     const SELECTOR_STATUS_INPROGRESS = '.mfu-file-item__upload-state--in-progress';
+    const SELECTOR_STATUS_ERROR = '.mfu-file-item__upload-state--error';
+    const SELECTOR_FILENAME_LABEL = '.mfu-file-item__filename';
     const EVENTS = {};
 
     EVENTS[SELECTOR_BTN_ABORT] = {tap: '_abortUpload'};
@@ -115,6 +117,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @param config.ontimeout {Function} on timeout callback
              * @param config.setXhrCallback {Function} a callback to return a created XHR object
              * @param config.publishedCallback {Function} a callback to invoke when content is published
+             * @param config.fileTypeNotAllowedCallback {Function} a callback to invoke when an uploaded file content type is not allowed
              */
             this.fire('mfuUploadFile', {
                 file: this.get('file').blob,
@@ -125,7 +128,25 @@ YUI.add('mfu-fileitem-view', function (Y) {
                 onload: this._showUploadedFileInfo.bind(this),
                 setXhrCallback: this._setXhr.bind(this),
                 publishedCallback: this._setContentInfo.bind(this),
+                fileTypeNotAllowedCallback: this._showFileTypeNotAllowedError.bind(this),
             });
+        },
+
+        /**
+         * Displays the File Type not allowed error message
+         *
+         * @method _showFileTypeNotAllowedError
+         * @protected
+         */
+        _showFileTypeNotAllowedError: function () {
+            const container = this.get('container');
+            const errorStatus = container.one(SELECTOR_STATUS_ERROR);
+
+            errorStatus.removeClass(CLASS_HIDDEN);
+            errorStatus.setHTML(this.get('fileTypeNotAllowedText').replace('{filename}', this._getFileName()));
+            container.one(SELECTOR_FILENAME_LABEL).addClass(CLASS_HIDDEN);
+            container.one(SELECTOR_STATUS_DONE).addClass(CLASS_HIDDEN);
+            container.one(SELECTOR_STATUS_INPROGRESS).addClass(CLASS_HIDDEN);
         },
 
         /**
@@ -250,8 +271,15 @@ YUI.add('mfu-fileitem-view', function (Y) {
          */
         _abortUpload: function () {
             const filename = this._getFileName();
+            const xhr = this.get('xhr');
 
-            this.get('xhr').abort();
+            if (!xhr || typeof xhr.abort !== 'function') {
+                this.destroy({remove: true});
+
+                return;
+            }
+
+            xhr.abort();
             this._set('xhr');
             this._fireNotifyEvent({
                 text: this.get('fileUploadAbortedText').replace('{filename}', filename),
@@ -519,18 +547,6 @@ YUI.add('mfu-fileitem-view', function (Y) {
             },
 
             /**
-             * File type error text
-             *
-             * @attribute fileTypeErrorText
-             * @type {String}
-             * @readOnly
-             */
-            fileTypeErrorText: {
-                value: 'File Type not allowed: {filename}',
-                readOnly: true,
-            },
-
-            /**
              * Start fiel publishing text
              *
              * @attribute fileStartPublishText
@@ -599,6 +615,18 @@ YUI.add('mfu-fileitem-view', function (Y) {
              */
             fileUploadFailedText: {
                 value: 'File upload failed - [{statusCode}] {statusText}',
+                readOnly: true,
+            },
+
+            /**
+             * File type not allowed error text
+             *
+             * @attribute fileTypeNotAllowedText
+             * @type {String}
+             * @readOnly
+             */
+            fileTypeNotAllowedText: {
+                value: 'File Type not allowed: {filename}',
                 readOnly: true,
             },
         }

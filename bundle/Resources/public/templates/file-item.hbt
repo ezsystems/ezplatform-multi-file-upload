@@ -42,6 +42,7 @@
     <div class="mfu-file-item__info">
         <div class="mfu-file-item__filename">{{ filename }}</div>
         <div class="mfu-file-item__upload-state--done mfu--hidden">{{ fileUploadDoneText }}</div>
+        <div class="mfu-file-item__upload-state--error mfu--hidden"></div>
         <div class="mfu-file-item__upload-state--in-progress">
             <div class="mfu-file-item__progress-bar">
                 <div class="mfu-file-item__progress-value" style="width: 0;"></div>
