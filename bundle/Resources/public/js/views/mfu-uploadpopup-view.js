@@ -161,7 +161,7 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
         _renderFileItem: function (fragment, file) {
             let itemView = new Y.mfu.FileItemView({
                 file: Object.freeze(file),
-                bubbleTargets: this,
+                bubbleTargets: this
             });
 
             fragment.appendChild(itemView.render().get('container'));
@@ -352,7 +352,7 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
             uploadedText: {
                 value: 'Uploaded ({uploaded}/{total})',
                 readOnly: true,
-            }
+            },
         }
     });
 });

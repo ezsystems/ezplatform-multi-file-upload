@@ -38,7 +38,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
      * @constructor
      * @extends eZ.TemplateBasedView
      */
-    Y.mfu.FileItemView = Y.Base.create('mfuFileItemView', Y.eZ.TemplateBasedView, [], {
+    Y.mfu.FileItemView = Y.Base.create('mfuFileItemView', Y.eZ.TemplateBasedView, [Y.mfu.Helper.TextFormat], {
         containerTemplate: '<li/>',
 
         initializer: function () {
@@ -118,6 +118,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @param config.setXhrCallback {Function} a callback to return a created XHR object
              * @param config.publishedCallback {Function} a callback to invoke when content is published
              * @param config.fileTypeNotAllowedCallback {Function} a callback to invoke when an uploaded file content type is not allowed
+             * @param config.maxFileSizeExceededCallback {Function} a callback to invoke when an uploaded file size has exceeded max size
              */
             this.fire('mfuUploadFile', {
                 file: this.get('file').blob,
@@ -129,7 +130,22 @@ YUI.add('mfu-fileitem-view', function (Y) {
                 setXhrCallback: this._setXhr.bind(this),
                 publishedCallback: this._setContentInfo.bind(this),
                 fileTypeNotAllowedCallback: this._showFileTypeNotAllowedError.bind(this),
+                maxFileSizeExceededCallback: this._showMaxFileSizeExceededError.bind(this),
             });
+        },
+
+        /**
+         * Displays the max file size exceeded error message
+         *
+         * @method _showMaxFileSizeExceededError
+         * @protected
+         */
+        _showMaxFileSizeExceededError: function () {
+            const message = this.get('fileSizeExceededText')
+                                .replace('{filesize}', this._formatFileSize(this.get('file').blob.size))
+                                .replace('{filename}', this._getFileName());
+
+            this._uiShowErrorMessage(message);
         },
 
         /**
@@ -139,11 +155,22 @@ YUI.add('mfu-fileitem-view', function (Y) {
          * @protected
          */
         _showFileTypeNotAllowedError: function () {
+            this._uiShowErrorMessage(this.get('fileTypeNotAllowedText').replace('{filename}', this._getFileName()));
+        },
+
+        /**
+         * Displays an error message in UI
+         *
+         * @method _uiShowErrorMessage
+         * @protected
+         * @param message {String} error message
+         */
+        _uiShowErrorMessage: function (message) {
             const container = this.get('container');
             const errorStatus = container.one(SELECTOR_STATUS_ERROR);
 
             errorStatus.removeClass(CLASS_HIDDEN);
-            errorStatus.setHTML(this.get('fileTypeNotAllowedText').replace('{filename}', this._getFileName()));
+            errorStatus.setHTML(message);
             container.one(SELECTOR_FILENAME_LABEL).addClass(CLASS_HIDDEN);
             container.one(SELECTOR_STATUS_DONE).addClass(CLASS_HIDDEN);
             container.one(SELECTOR_STATUS_INPROGRESS).addClass(CLASS_HIDDEN);
@@ -236,31 +263,6 @@ YUI.add('mfu-fileitem-view', function (Y) {
             container.one(SELECTOR_STATUS_DONE).removeClass(CLASS_HIDDEN);
             container.one(SELECTOR_BTN_ABORT).addClass(CLASS_HIDDEN);
             container.one(SELECTOR_STATUS_INPROGRESS).addClass(CLASS_HIDDEN);
-        },
-
-        /**
-         * Formats a file size information
-         *
-         * @method _formatFileSize
-         * @protected
-         * @param bytes {Number} file size in bytes
-         * @return {String} formatted file size information
-         */
-        _formatFileSize: function (bytes) {
-            const units = ['bytes', 'KB', 'MB', 'GB'];
-            const kilobyte = 1024;
-            let size = parseInt(bytes, 10) || 0;
-            let unitIndex = 0;
-            let decimalUnits;
-
-            while (size >= kilobyte) {
-                size = size / kilobyte;
-                unitIndex++;
-            }
-
-            decimalUnits = unitIndex < 1 ? 0 : 1;
-
-            return (size.toFixed(size >= 10 || decimalUnits) + ' ' + units[unitIndex]);
         },
 
         /**
@@ -629,6 +631,19 @@ YUI.add('mfu-fileitem-view', function (Y) {
                 value: 'File Type not allowed: {filename}',
                 readOnly: true,
             },
+
+            /**
+             * File size exceeded max allowed file size text
+             *
+             * @attribute fileSizeExceededText
+             * @type {String}
+             * @readOnly
+             */
+            fileSizeExceededText: {
+                value: 'File Size not allowed: {filesize} - {filename}',
+                readOnly: true,
+            },
+
         }
     });
 });

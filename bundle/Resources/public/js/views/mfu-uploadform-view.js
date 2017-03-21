@@ -19,6 +19,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
     const SELECTOR_BTN = '.mfu-form___btn--select-files';
     const SELECTOR_FORM = '.mfu-form__container';
     const SELECTOR_INPUT_FILES = '#mfu-files';
+    const SELECTOR_FILESIZE_INFO = '.mfu-form__limit-info';
     const EVENTS = {};
 
     EVENTS[SELECTOR_BTN] = {tap: '_uiSelectFiles'};
@@ -42,7 +43,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
      * @constructor
      * @extends eZ.TemplateBasedView
      */
-    Y.mfu.UploadFormView = Y.Base.create('mfuUploadFormView', Y.eZ.TemplateBasedView, [], {
+    Y.mfu.UploadFormView = Y.Base.create('mfuUploadFormView', Y.eZ.TemplateBasedView, [Y.mfu.Helper.TextFormat], {
         containerTemplate: '<form/>',
 
         initializer: function () {
@@ -52,6 +53,44 @@ YUI.add('mfu-uploadform-view', function (Y) {
             window.addEventListener('dragover', this._preventDefaultAction, false);
 
             this.after('activeChange', this._fireGetAllowedMimeTypesEvent, this);
+            this.after('activeChange', this._fireGetMaxFileSizeLimitEvent, this);
+        },
+
+        /**
+         * Fires the `mfuGetMaxFileSizeLimit` event
+         *
+         * @method _fireGetMaxFileSizeLimitEvent
+         * @protected
+         * @param event {Object} event facade
+         */
+        _fireGetMaxFileSizeLimitEvent: function (event) {
+            if (!event.newVal) {
+                return;
+            }
+
+            /**
+             * Gets a max file size limit info.
+             * Listened by {{#crossLink "mfu.Plugin.FileUploadService"}}mfu.Plugin.FileUploadService{{/crossLink}}
+             *
+             * @event mfuGetMaxFileSizeLimit
+             * @param config.callback {Function} a callback where the size limit info should be passed into
+             */
+            this.fire('mfuGetMaxFileSizeLimit', {
+                callback: this._uiUpdateFileSizeLimitLabel.bind(this)
+            });
+        },
+
+        /**
+         * Update the max file size info label
+         *
+         * @method _uiUpdateFileSizeLimitLabel
+         * @protected
+         * @param limit {String} max file size limit
+         */
+        _uiUpdateFileSizeLimitLabel: function (limit) {
+            this.get('container')
+                .one(SELECTOR_FILESIZE_INFO)
+                .setHTML(this.get('maxFileSizeText').replace('{filesize}', this._formatFileSize(limit)));
         },
 
         render: function () {
@@ -118,9 +157,25 @@ YUI.add('mfu-uploadform-view', function (Y) {
 
             this._uiRemoveDragState();
 
-            if (!onDropCallback(event)) {
+            if (!this._checkHasEventFileData(event) || !onDropCallback(event)) {
                 return;
             }
+        },
+
+        /**
+         * Checks whether a given object contains file upload data
+         *
+         * @method _checkHasEventFileData
+         * @protected
+         * @param event {Object} event facade
+         * @return {Boolean}
+         */
+        _checkHasEventFileData: (event) => {
+            return (event && event._event &&
+                (
+                    (event._event.dataTransfer && event._event.dataTransfer.files.length) ||
+                    (event._event.target.files && event._event.target.files.length))
+                );
         },
 
         /**
@@ -130,12 +185,6 @@ YUI.add('mfu-uploadform-view', function (Y) {
          * @param event {Object} form upload files event
          */
         uploadFiles: function (event) {
-            if (!event ||
-                (event._event.dataTransfer && !event._event.dataTransfer.files.length) ||
-                (event._event.target.files && !event._event.target.files.length)) {
-                return;
-            }
-
             this._uploadFiles(event);
         },
 
@@ -192,6 +241,18 @@ YUI.add('mfu-uploadform-view', function (Y) {
             onDropCallback: {
                 valueFn: () => true,
                 writeOnce: 'initOnly'
+            },
+
+            /**
+             * Max file size info text
+             *
+             * @attribute maxFileSizeText
+             * @type {String}
+             * @readOnly
+             */
+            maxFileSizeText: {
+                value: '(Max file size: {filesize})',
+                readOnly: true
             },
         }
     });
