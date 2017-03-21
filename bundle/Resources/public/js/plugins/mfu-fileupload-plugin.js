@@ -127,6 +127,12 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
             host.on('mfuFileItemView:mfuDeleteFile', this._deleteContent, this);
         },
 
+        /**
+         * Sets view attributes values based on provided content type mapping configuration from backend
+         *
+         * @method _setContentTypeMappings
+         * @protected
+         */
         _setContentTypeMappings: function () {
             const config = this.get('host').get('app').get('config.multiFileUpload');
 
@@ -302,8 +308,8 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
                 .getContentService()
                 .createContent(
                     data.struct,
-                    this._attemptToPublishContent.bind(this, callbacks.onerror, callbacks.publishedCallback),
-                    callbacks
+                    callbacks,
+                    this._attemptToPublishContent.bind(this, callbacks.onerror, callbacks.publishedCallback)
                 );
         },
 
