@@ -18,6 +18,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
     const SELECTOR_INPUT = '.mfu-form__input';
     const SELECTOR_BTN = '.mfu-form___btn--select-files';
     const SELECTOR_FORM = '.mfu-form__container';
+    const SELECTOR_INPUT_FILES = '#mfu-files';
     const EVENTS = {};
 
     EVENTS[SELECTOR_BTN] = {tap: '_uiSelectFiles'};
@@ -49,6 +50,8 @@ YUI.add('mfu-uploadform-view', function (Y) {
 
             window.addEventListener('drop', this._preventDefaultAction, false);
             window.addEventListener('dragover', this._preventDefaultAction, false);
+
+            this.after('activeChange', this._fireGetAllowedMimeTypesEvent, this);
         },
 
         render: function () {
@@ -61,6 +64,49 @@ YUI.add('mfu-uploadform-view', function (Y) {
         },
 
         /**
+         * Fires the `mfuGetAllowedMimeTypes` event
+         *
+         * @method _fireGetAllowedMimeTypesEvent
+         * @protected
+         * @param event {Object} event facade
+         */
+        _fireGetAllowedMimeTypesEvent: function (event) {
+            if (!event.newVal) {
+                return;
+            }
+
+            /**
+             * Gets allowed mime types filter info.
+             * Listened by {{#crossLink "mfu.Plugin.FileUploadService"}}mfu.Plugin.FileUploadService{{/crossLink}}
+             *
+             * @event mfuGetAllowedMimeTypes
+             * @param config.callback {Function} event callback
+             */
+            this.fire('mfuGetAllowedMimeTypes', {
+                callback: this._uiUpdateAcceptAttribute.bind(this)
+            });
+        },
+
+        /**
+         * Updates files input field `accept` attribute's value
+         *
+         * @method _uiUpdateAcceptAttribute
+         * @protected
+         * @param allowedMimeTypes {Array} list of allowed mime types
+         */
+        _uiUpdateAcceptAttribute: function (allowedMimeTypes) {
+            const inputFileField = this.get('container').one(SELECTOR_INPUT_FILES);
+
+            if (!allowedMimeTypes || !allowedMimeTypes.length) {
+                inputFileField.removeAttribute('accept');
+
+                return;
+            }
+
+            inputFileField.setAttribute('accept', allowedMimeTypes.join());
+        },
+
+        /**
          * Starts uploading files
          *
          * @method _uploadFiles
@@ -69,6 +115,8 @@ YUI.add('mfu-uploadform-view', function (Y) {
          */
         _uploadFiles: function (event) {
             const onDropCallback = this.get('onDropCallback');
+
+            this._uiRemoveDragState();
 
             if (!onDropCallback(event)) {
                 return;

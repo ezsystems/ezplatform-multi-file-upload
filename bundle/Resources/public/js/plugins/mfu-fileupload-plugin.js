@@ -29,6 +29,21 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         initializer: function () {
             var host = this.get('host');
 
+            /**
+             * The update sub items count promise handler
+             *
+             * @property _updateSubItemsCountPromise
+             * @type {Promise|null}
+             */
+            this._updateSubItemsCountPromise = null;
+            /**
+             * The refresh list timeout handler
+             *
+             * @property _refreshListTimeout
+             * @type {Number|null}
+             */
+            this._refreshListTimeout = null;
+
             host._set('subitemBox', this._setSubItemBoxView());
             host.on('*:mfuRefreshList', this._refreshSubItemBoxViewItems, this);
             host.on('activeChange', this._toggleSubItemBoxViewActiveState, this);
@@ -78,16 +93,104 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         },
 
         /**
-         * Refreshes a list of files in a subitem box view instance
+         * Attempts to refresh sub item box view items after a timeout
          *
          * @method _refreshSubItemBoxViewItems
          * @protected
          */
         _refreshSubItemBoxViewItems: function () {
-            const box = this.get('subitemBoxView');
+            window.clearTimeout(this._refreshListTimeout);
 
-            box._getSubitemView(box.get('subitemViewIdentifier'))._refresh();
-        }
+            this._refreshListTimeout = window.setTimeout(this._refreshList.bind(this), 1000);
+        },
+
+        /**
+         * Refreshes a list of sub items
+         *
+         * @method _refreshList
+         * @protected
+         */
+        _refreshList: function () {
+            const box = this.get('subitemBoxView');
+            const subItemListView = box._getSubitemView(box.get('subitemViewIdentifier'));
+
+            if (!this._updateSubItemsCountPromise) {
+                this._updateSubItemsCountPromise = new Promise((resolve) => {
+                    subItemListView.onceAfter('loadingChange', resolve, this);
+                });
+
+                this._updateSubItemsCountPromise
+                    .then(this._fireLoadLocationEvent.bind(subItemListView))
+                    .then(this._updateSubItemsCountLabel.bind(this, box, subItemListView))
+                    .catch(this._fireErrorNotificationEvent.bind(box));
+            }
+
+            subItemListView._refresh();
+        },
+
+        /**
+         * Fires `notify` event with error message
+         *
+         * @method _fireErrorNotificationEvent
+         * @param error {Any} error object
+         */
+        _fireErrorNotificationEvent: function (error) {
+            /**
+             * Displays a notification in the notification bar
+             * Listened by {{#crossLink "eZ.Plugin.NotificationHub"}}eZ.Plugin.NotificationHub{{/crossLink}}
+             *
+             * @event notify
+             * @param config.notification {Object} notification config
+             */
+            this.fire('notify', {
+                notification: {
+                    text: 'Error occurred when refreshing sub items list: ' + error,
+                    identifier: 'mfu-subitems-list-refresh-error-' + Date.now(),
+                    state: 'error',
+                    timeout: 0,
+                }
+            });
+        },
+
+        /**
+         * Fires the `mfuLoadLocation` event
+         *
+         * @method _fireLoadLocationEvent
+         * @protected
+         * @return {Promise}
+         */
+        _fireLoadLocationEvent: function () {
+            return new Promise((resolve, reject) => {
+                /**
+                 * Loads location model data
+                 *
+                 * @event mfuLoadLocation
+                 * @param config.onSuccess {Function} a success callback
+                 * @param config.onError {Function} an error callback
+                 * @param config.location {eZ.Location} location model
+                 */
+                this.fire('mfuLoadLocation', {
+                    onSuccess: resolve,
+                    onError: reject,
+                    location: this.get('location')
+                });
+            })
+        },
+
+        /**
+         * Updates sub items count label
+         *
+         * @method _updateSubItemsCountLabel
+         * @protected
+         * @param boxView {eZ.AsynchronousSubitemView} sub items view isntance
+         * @param location {Object} location model data hash
+         */
+        _updateSubItemsCountLabel: function (boxView, subItemsView, location) {
+            boxView.updateSubItemsCountLabel(location.childCount);
+            subItemsView._uiUpdatePagination();
+
+            this._updateSubItemsCountPromise = null;
+        },
     }, {
         NS: VIEW_PLUGIN_NAME,
         ATTRS: {
@@ -125,6 +228,27 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
 
             host.on('mfuFileItemView:mfuUploadFile', this._initFileUpload, this);
             host.on('mfuFileItemView:mfuDeleteFile', this._deleteContent, this);
+            host.on('mfuUploadFormView:mfuGetAllowedMimeTypes', this._setAllowedMimeTypesInfo, this);
+            host.on('*:mfuLoadLocation', this._loadLocationModel, this);
+        },
+
+        /**
+         * Loads location modela
+         *
+         * @method _loadLocationModel
+         * @protected
+         * @param event {Object} event facade
+         */
+        _loadLocationModel: function (event) {
+            event.location.load({api: this.get('host').get('capi')}, (error, response) => {
+                if (error) {
+                    event.onError(response);
+
+                    return;
+                }
+
+                event.onSuccess(response.document.Location);
+            });
         },
 
         /**
@@ -142,6 +266,34 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         },
 
         /**
+         * Retrieves information about allowed mime types
+         *
+         * @method _setAllowedMimeTypesInfo
+         * @protected
+         * @param event {Object} event facade
+         * @param event.callback {Function} a callback where allowed mime types are passed into
+         */
+        _setAllowedMimeTypesInfo: function (event) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMappings = this._findLocationMappings(contentTypeIdentifier);
+            const allowedMimeTypes = locationMappings ? locationMappings.mimeTypeFilter : [];
+
+            event.callback(allowedMimeTypes);
+        },
+
+        /**
+         * Finds a location mappings based on provided location content type identifier
+         *
+         * @method _findLocationMappings
+         * @protected
+         * @param identifier {String} location content type identifier
+         * @return {Object}
+         */
+        _findLocationMappings: function (identifier) {
+            return this.get('contentTypeByLocationMappings').find(item => item.contentTypeIdentifier === identifier);
+        },
+
+        /**
          * Initializes a file upload process
          *
          * @method _initFileUpload
@@ -155,10 +307,17 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @param event.ontimeout {Function} on timeout callback
          * @param event.setXhrCallback {Function} a callback to return a created XHR object
          * @param event.publishedCallback {Function} a callback to invoke when content is published
+         * @param event.fileTypeNotAllowedCallback {Function} a callback to invoke when an uploaded file type is not allowed
          */
         _initFileUpload: function (event) {
             const capi = this.get('host').get('capi');
             const data = {file: event.file};
+
+            if (!this._checkFileTypeAllowed(event.file)) {
+                event.fileTypeNotAllowedCallback();
+
+                return;
+            }
 
             this._detectContentType(event.file)
                 .then(this._createContentStruct.bind(this, data))
@@ -181,6 +340,25 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         },
 
         /**
+         * Checks if a provided file has an allowed file type
+         *
+         * @method _checkFileTypeAllowed
+         * @protected
+         * @param file {File} File object
+         * @return {Boolean} true if file type is allowed
+         */
+        _checkFileTypeAllowed: function (file) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMapping = this._findLocationMappings(contentTypeIdentifier);
+
+            if (!locationMapping) {
+                return true;
+            }
+
+            return !!locationMapping.mappings.find(item => item.mimeType === file.type);
+        },
+
+        /**
          * Detects a content type based on file mime type
          *
          * @method _detectContentType
@@ -189,21 +367,45 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @return {Promise}
          */
         _detectContentType: function (file) {
-            const contentTypeMapping = this.get('contentTypeDefaultMappings').find(item => item.mimeType === file.type) ||
-                this.get('defaultContentType');
-
-            this._detectedContentTypeMapping = contentTypeMapping;
+            this._detectedContentTypeMapping = this._detectContentTypeMapping(file);
 
             return new Promise((resolve, reject) => {
                 this.get('host')
                     .get('capi')
                     .getContentTypeService()
                     .loadContentTypeByIdentifier(
-                        contentTypeMapping.contentTypeIdentifier,
+                        this._detectedContentTypeMapping.contentTypeIdentifier,
                         this._resolvePromiseCallback.bind(this, resolve, reject)
                     );
             });
         },
+
+        /**
+         * Detects a content type based on a mapping provided by backend
+         *
+         * @method _detectContentTypeMapping
+         * @protected
+         * @param file {File} File object
+         * @return {Object} detected content type mapping
+         */
+        _detectContentTypeMapping: function (file) {
+            const contentTypeIdentifier = this.get('host').get('contentType').get('identifier');
+            const locationMapping = this._findLocationMappings(contentTypeIdentifier);
+            const mappings = locationMapping ? locationMapping.mappings : this.get('contentTypeDefaultMappings');
+
+            return this._findMimeTypeMapping(mappings, file) || this.get('defaultContentType');
+        },
+
+        /**
+         * Finds an element that has the same mapped file mimeType as a provided file type
+         *
+         * @method _findMimeTypeMapping
+         * @protected
+         * @param mappings {Array} list of mappings
+         * @param file {File} File object
+         * @return {Boolean}
+         */
+        _findMimeTypeMapping: (mappings, file) => mappings.find(item => item.mimeType === file.type),
 
         /**
          * Resolves/rejects a promise
@@ -444,10 +646,11 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
              * Uploaded files content type mappings by location
              *
              * @attibute contentTypeByLocationMappings
-             * @type {Object}
+             * @type {Array}
              * @readOnly
              */
             contentTypeByLocationMappings: {
+                value: [],
                 readOnly: true
             },
 
