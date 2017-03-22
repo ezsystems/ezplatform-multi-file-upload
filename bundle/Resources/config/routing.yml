@@ -1,0 +1,8 @@
+ez_systems.multifile_upload.controller.rest.check_permission:
+    methods: [GET]
+    path: /multifileupload/v1/check-permission/{parentLocationId}/{contentTypeId}
+    requirements:
+        parentLocationId: '\d+'
+        contentTypeId: '\d+'
+    defaults:
+        _controller: ez_systems.multifile_upload.controller.rest:checkPermission
