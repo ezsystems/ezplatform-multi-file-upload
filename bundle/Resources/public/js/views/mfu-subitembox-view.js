@@ -13,6 +13,8 @@ YUI.add('mfu-subitembox-view', function (Y) {
     Y.namespace('mfu');
 
     const SELECTOR_SUBITEMS = '.mfu-box__subitem-boxes';
+    const SELECTOR_SUBITEMS_HEADER = '.ez-subitembox-title > .ez-collapse-toggle';
+    const SELECTOR_PAGINATION_TOTAL = '.ez-loadmorepagination-display-count ~ strong';
 
     /**
      * The subitem box view.
@@ -113,9 +115,12 @@ YUI.add('mfu-subitembox-view', function (Y) {
          * @return {mfu.SubitemBoxView} the view itself
          */
         updateSubItemsCountLabel: function (itemsCount) {
-            var label = this.get('container').one('.ez-subitembox-title > .ez-collapse-toggle');
+            const container = this.get('container');
+            const listHeader = container.one(SELECTOR_SUBITEMS_HEADER);
+            const totalCountPagination = container.one(SELECTOR_PAGINATION_TOTAL);
 
-            label.setHTML(label.getHTML().replace(/\([^\]]+\)/g, `(${itemsCount})`));
+            listHeader.setHTML(listHeader.getHTML().replace(/\([^\]]+\)/g, `(${itemsCount})`));
+            totalCountPagination.setHTML(itemsCount);
 
             return this;
         },

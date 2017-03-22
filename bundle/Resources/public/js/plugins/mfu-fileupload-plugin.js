@@ -29,6 +29,21 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         initializer: function () {
             var host = this.get('host');
 
+            /**
+             * The update sub items count promise handler
+             *
+             * @property _updateSubItemsCountPromise
+             * @type {Promise|null}
+             */
+            this._updateSubItemsCountPromise = null;
+            /**
+             * The refresh list timeout handler
+             *
+             * @property _refreshListTimeout
+             * @type {Number|null}
+             */
+            this._refreshListTimeout = null;
+
             host._set('subitemBox', this._setSubItemBoxView());
             host.on('*:mfuRefreshList', this._refreshSubItemBoxViewItems, this);
             host.on('activeChange', this._toggleSubItemBoxViewActiveState, this);
@@ -78,17 +93,103 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         },
 
         /**
-         * Refreshes a list of files in a subitem box view instance
+         * Attempts to refresh sub item box view items after a timeout
          *
          * @method _refreshSubItemBoxViewItems
          * @protected
          */
         _refreshSubItemBoxViewItems: function () {
+            window.clearTimeout(this._refreshListTimeout);
+
+            this._refreshListTimeout = window.setTimeout(this._refreshList.bind(this), 1000);
+        },
+
+        /**
+         * Refreshes a list of sub items
+         *
+         * @method _refreshList
+         * @protected
+         */
+        _refreshList: function () {
             const box = this.get('subitemBoxView');
             const subItemListView = box._getSubitemView(box.get('subitemViewIdentifier'));
 
+            if (!this._updateSubItemsCountPromise) {
+                this._updateSubItemsCountPromise = new Promise((resolve) => {
+                    subItemListView.onceAfter('loadingChange', resolve, this);
+                });
+
+                this._updateSubItemsCountPromise
+                    .then(this._fireLoadLocationEvent.bind(subItemListView))
+                    .then(this._updateSubItemsCountLabel.bind(this, box, subItemListView))
+                    .catch(this._fireErrorNotificationEvent.bind(box));
+            }
+
             subItemListView._refresh();
-            subItemListView.after('loadingChange', () => box.updateSubItemsCountLabel(subItemListView.get('items').length));
+        },
+
+        /**
+         * Fires `notify` event with error message
+         *
+         * @method _fireErrorNotificationEvent
+         * @param error {Any} error object
+         */
+        _fireErrorNotificationEvent: function (error) {
+            /**
+             * Displays a notification in the notification bar
+             * Listened by {{#crossLink "eZ.Plugin.NotificationHub"}}eZ.Plugin.NotificationHub{{/crossLink}}
+             *
+             * @event notify
+             * @param config.notification {Object} notification config
+             */
+            this.fire('notify', {
+                notification: {
+                    text: 'Error occurred when refreshing sub items list: ' + error,
+                    identifier: 'mfu-subitems-list-refresh-error-' + Date.now(),
+                    state: 'error',
+                    timeout: 0,
+                }
+            });
+        },
+
+        /**
+         * Fires the `mfuLoadLocation` event
+         *
+         * @method _fireLoadLocationEvent
+         * @protected
+         * @return {Promise}
+         */
+        _fireLoadLocationEvent: function () {
+            return new Promise((resolve, reject) => {
+                /**
+                 * Loads location model data
+                 *
+                 * @event mfuLoadLocation
+                 * @param config.onSuccess {Function} a success callback
+                 * @param config.onError {Function} an error callback
+                 * @param config.location {eZ.Location} location model
+                 */
+                this.fire('mfuLoadLocation', {
+                    onSuccess: resolve,
+                    onError: reject,
+                    location: this.get('location')
+                });
+            })
+        },
+
+        /**
+         * Updates sub items count label
+         *
+         * @method _updateSubItemsCountLabel
+         * @protected
+         * @param boxView {eZ.AsynchronousSubitemView} sub items view isntance
+         * @param location {Object} location model data hash
+         */
+        _updateSubItemsCountLabel: function (boxView, subItemsView, location) {
+            boxView.updateSubItemsCountLabel(location.childCount);
+            subItemsView._uiUpdatePagination();
+
+            this._updateSubItemsCountPromise = null;
         },
     }, {
         NS: VIEW_PLUGIN_NAME,
@@ -128,6 +229,26 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
             host.on('mfuFileItemView:mfuUploadFile', this._initFileUpload, this);
             host.on('mfuFileItemView:mfuDeleteFile', this._deleteContent, this);
             host.on('mfuUploadFormView:mfuGetAllowedMimeTypes', this._setAllowedMimeTypesInfo, this);
+            host.on('*:mfuLoadLocation', this._loadLocationModel, this);
+        },
+
+        /**
+         * Loads location modela
+         *
+         * @method _loadLocationModel
+         * @protected
+         * @param event {Object} event facade
+         */
+        _loadLocationModel: function (event) {
+            event.location.load({api: this.get('host').get('capi')}, (error, response) => {
+                if (error) {
+                    event.onError(response);
+
+                    return;
+                }
+
+                event.onSuccess(response.document.Location);
+            });
         },
 
         /**
@@ -186,6 +307,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @param event.ontimeout {Function} on timeout callback
          * @param event.setXhrCallback {Function} a callback to return a created XHR object
          * @param event.publishedCallback {Function} a callback to invoke when content is published
+         * @param event.fileTypeNotAllowedCallback {Function} a callback to invoke when an uploaded file type is not allowed
          */
         _initFileUpload: function (event) {
             const capi = this.get('host').get('capi');
