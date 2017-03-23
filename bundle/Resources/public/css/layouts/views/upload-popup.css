@@ -3,19 +3,31 @@
  * For full copyright and license information view LICENSE file distributed with this source code.
  */
 
-.mfu-popup-opened .mfu-popup-overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10000;
-}
-
-.ez-view-mfuuploadpopupview.ezs-popupview {
+.ez-view-mfuuploadpopupview {
+    display: block;
+    position: fixed;
+    z-index: 1001;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    min-width: 20rem;
+    max-width: 60rem;
     min-height: auto;
     max-height: 90vh;
     width: 50vw;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close {
+    position: absolute;
+    z-index: 2;
+    top: 2rem;
+    right: 2rem;
+    height: 2rem;
+    width: 2rem;
+    border: 0 none;
+    padding: 0;
+    overflow: hidden;
+    display: block;
 }
 
 .ez-view-mfuuploadpopupview .mfu-popup__list-container {
@@ -40,4 +52,17 @@
 
 .ez-view-mfuuploadpopupview .ez-view-mfufileitemview + .ez-view-mfufileitemview {
     border-top: .125rem solid #dfdfdf;
+}
+
+.mfu-popup-opened .mfu-popup-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+}
+
+.ez-view-mfuuploadpopupview.mfu-popup--hidden {
+    transform: translate(-50%, 0) scale(0);
 }

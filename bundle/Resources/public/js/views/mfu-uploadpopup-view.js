@@ -15,9 +15,11 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
     const CLASS_POPUP_OPENED = 'mfu-popup-opened';
     const CLASS_DISCOVERYBAR_HIDDEN = 'is-menu-hidden';
     const CLASS_POPUP_OVERLAY = 'mfu-popup-overlay';
+    const CLASS_HIDDEN = 'mfu-popup--hidden';
     const SELECTOR_CONTENT = '.mfu-popup__content';
     const SELECTOR_LIST = '.mfu-popup__files-list';
     const SELECTOR_TITLE = '.mfu-popup__list-title';
+    const SELECTOR_BTN_CLOSE = '.mfu-popup__btn--close';
 
     /**
      * The subitem box view. It allows the user to choose how the subitems are
@@ -26,13 +28,16 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
      * @namespace mfu
      * @class UploadPopupView
      * @constructor
-     * @extends eZS.PopupView
+     * @extends eZ.TemplateBasedView
      */
-    Y.mfu.UploadPopupView = Y.Base.create('mfuUploadPopupView', Y.eZS.PopupView, [], {
+    Y.mfu.UploadPopupView = Y.Base.create('mfuUploadPopupView', Y.eZ.TemplateBasedView, [], {
+        events: {[SELECTOR_BTN_CLOSE]: {tap: '_hidePopup'}},
+
         initializer: function () {
             this.on('mfuFileItemView:destroy', this._removeFileFromUploadedFiles, this);
             this.after('activeChange', this._toggleFormActiveState, this);
             this.after('activeChange', this._renderPopupOverlay, this);
+            this.after('displayedChange', this._toggleDisplay, this);
             this.after('displayedChange', this._uiToggleAppSideViewsState, this);
             this.after('uploadedFilesChange', this._uiUpdateFilesListTitle, this);
             this.after('mfuFileItemView:destroy', this._attemptToHidePopup, this);
@@ -41,9 +46,24 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
         },
 
         render: function () {
-            this.constructor.superclass.render.apply(this, arguments);
+            this.get('container').setHTML(this.template(this.getAttrs()));
 
             this._renderUploadForm();
+
+            return this._toggleDisplay();
+        },
+
+        /**
+         * Shows/hides popup
+         *
+         * @method _toggleDisplay
+         * @protected
+         * @return {mfu.UploadPopupView} the view itself
+         */
+        _toggleDisplay: function () {
+            var methodName = this.get('displayed') ? 'removeClass' : 'addClass';
+
+            this.get('container')[methodName](CLASS_HIDDEN);
 
             return this;
         },
@@ -312,6 +332,17 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
         }
     }, {
         ATTRS: {
+            /**
+             * Displayed flag
+             *
+             * @attribute displayed
+             * @default false
+             * @type {Boolean}
+             */
+            displayed: {
+                value: false
+            },
+
             /**
              * File upload form
              *
