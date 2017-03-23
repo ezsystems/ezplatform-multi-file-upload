@@ -3,8 +3,34 @@
  * For full copyright and license information view LICENSE file distributed with this source code.
  */
 
-.mfu-popup-opened .mfu-popup-overlay {
-    background: rgba(0,0,0,.5);
+.ez-view-mfuuploadpopupview {
+    background: #d8d8d8;
+    border-radius: .5rem;
+    opacity: 1;
+    transition: opacity .3s cubic-bezier(.25,.8,.25,1);
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close {
+    background: none;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close:before,
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close:after {
+    content: '';
+    width: 1px;
+    height: 100%;
+    background: #aaa;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close:before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.ez-view-mfuuploadpopupview .mfu-popup__btn--close:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .ez-view-mfuuploadpopupview .mfu-popup__list-title {
@@ -14,4 +40,12 @@
 
 .ez-view-mfuuploadpopupview .mfu-popup__files-list {
     background: #fafafa;
+}
+
+.mfu-popup-opened .mfu-popup-overlay {
+    background: rgba(0,0,0,.5);
+}
+
+.mfu-popup--hidden {
+    opacity: 0;
 }

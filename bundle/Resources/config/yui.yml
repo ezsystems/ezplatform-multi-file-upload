@@ -40,7 +40,7 @@ system:
                     requires:
                         - 'mfu-uploadform-view'
                         - 'mfu-fileitem-view'
-                        - 'ezs-popupview'
+                        - 'event-tap'
                         - 'mfuuploadpopupview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-uploadpopup-view.js
                 mfuuploadpopupview-ez-template:
