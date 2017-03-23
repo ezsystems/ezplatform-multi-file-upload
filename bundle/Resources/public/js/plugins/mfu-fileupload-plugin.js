@@ -57,9 +57,10 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          */
         _toggleSubItemBoxViewActiveState: function (event) {
             const contentType = this.get('host').get('contentType');
+            const subitemBoxView = this.get('subitemBoxView');
 
-            if (contentType && contentType.get('isContainer')) {
-                this.get('subitemBoxView').set('active', event.newVal);
+            if (contentType && contentType.get('isContainer') && subitemBoxView) {
+                subitemBoxView.set('active', event.newVal);
             }
         },
 
@@ -228,6 +229,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
 
             host.on('mfuFileItemView:mfuUploadFile', this._initFileUpload, this);
             host.on('mfuFileItemView:mfuDeleteFile', this._deleteContent, this);
+            host.on('mfuUploadFormView:mfuGetMaxFileSizeLimit', this._setMaxFileSizeLimit, this);
             host.on('mfuUploadFormView:mfuGetAllowedMimeTypes', this._setAllowedMimeTypesInfo, this);
             host.on('*:mfuLoadLocation', this._loadLocationModel, this);
         },
@@ -249,6 +251,17 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
 
                 event.onSuccess(response.document.Location);
             });
+        },
+
+        /**
+         * Runs an event callback to set the max size limit info
+         *
+         * @method _setMaxFileSizeLimit
+         * @protected
+         * @param event {Object} event facade
+         */
+        _setMaxFileSizeLimit: function (event) {
+            event.callback(this.get('host').get('app').get('config.multiFileUpload.maxFileSize'));
         },
 
         /**
@@ -308,6 +321,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @param event.setXhrCallback {Function} a callback to return a created XHR object
          * @param event.publishedCallback {Function} a callback to invoke when content is published
          * @param event.fileTypeNotAllowedCallback {Function} a callback to invoke when an uploaded file type is not allowed
+         * @param event.maxFileSizeExceededCallback {Function} a callback to invoke when an uploaded file size exceeds a limit
          */
         _initFileUpload: function (event) {
             const capi = this.get('host').get('capi');
@@ -315,6 +329,12 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
 
             if (!this._checkFileTypeAllowed(event.file)) {
                 event.fileTypeNotAllowedCallback();
+
+                return;
+            }
+
+            if (!this._checkFileSizeAllowed(event.file)) {
+                event.maxFileSizeExceededCallback();
 
                 return;
             }
@@ -337,6 +357,17 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
                     publishedCallback: event.publishedCallback
                 }))
                 .catch(event.onerror.bind(event.target));
+        },
+
+        /**
+         * Checks if a provided file has acceptable file size
+         *
+         * @method _checkFileSizeAllowed
+         * @param file {File} File object
+         * @return {Boolean}
+         */
+        _checkFileSizeAllowed: function (file) {
+            return file.size <= parseInt(this.get('host').get('app').get('config.multiFileUpload.maxFileSize'), 10);
         },
 
         /**

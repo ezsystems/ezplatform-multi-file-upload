@@ -2,6 +2,9 @@ system:
     default:
         yui:
             modules:
+                mfu-text-format-helper:
+                    requires: ['base']
+                    path: %multifile_upload.public_dir%/js/helpers/mfu-text-format-helper.js
                 mfu-fileupload-plugin:
                     requires:
                         - 'plugin'
@@ -27,6 +30,7 @@ system:
                 mfu-uploadform-view:
                     requires:
                         - 'ez-templatebasedview'
+                        - 'mfu-text-format-helper'
                         - 'mfuuploadformview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-uploadform-view.js
                 mfuuploadformview-ez-template:
@@ -45,6 +49,7 @@ system:
                 mfu-fileitem-view:
                     requires:
                         - 'ez-templatebasedview'
+                        - 'mfu-text-format-helper'
                         - 'mfufileitemview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-fileitem-view.js
                 mfufileitemview-ez-template:
