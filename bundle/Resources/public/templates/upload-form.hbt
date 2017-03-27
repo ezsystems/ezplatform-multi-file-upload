@@ -6,7 +6,7 @@
         </symbol>
     </defs>
 </svg>
-<div class="mfu-form__container">
+<div class="mfu-form__container mfu-form--inactive">
     <h3 class="mfu-form__call-to-action">Drag your files here</h3>
     <label class="mfu-form__other-action" for="mfu-files">or if you prefer</label>
     <button class="mfu-form___btn--select-files">

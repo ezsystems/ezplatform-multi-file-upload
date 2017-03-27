@@ -13,12 +13,14 @@ YUI.add('mfu-uploadform-view', function (Y) {
     Y.namespace('mfu');
 
     const CLASS_FORM = 'mfu-form__container';
+    const CLASS_INACTIVE = 'mfu-form--inactive';
     const CLASS_DRAGOVER = 'mfu-form__container--drag-over';
     const SELECTOR_SUBITEMS = '.mfu__subitem-boxes';
     const SELECTOR_INPUT = '.mfu-form__input';
-    const SELECTOR_BTN = '.mfu-form___btn--select-files';
+    const SELECTOR_BTN = ':not(.mfu-form--inactive) .mfu-form___btn--select-files';
     const SELECTOR_FORM = '.mfu-form__container';
-    const SELECTOR_INPUT_FILES = '#mfu-files';
+    const SELECTOR_FORM_ACTIVE = '.mfu-form__container:not(.mfu-form--inactive)';
+    const SELECTOR_INACTIVE = '.mfu-form--inactive';
     const SELECTOR_FILESIZE_INFO = '.mfu-form__limit-info';
     const EVENTS = {};
 
@@ -27,7 +29,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
         input: '_uploadFiles',
         change: '_uploadFiles'
     };
-    EVENTS[SELECTOR_FORM] = {
+    EVENTS[SELECTOR_FORM_ACTIVE] = {
         dragenter: '_uiSetDragState',
         dragover: '_uiSetDragState',
         dragleave: '_uiRemoveDragState',
@@ -54,6 +56,95 @@ YUI.add('mfu-uploadform-view', function (Y) {
 
             this.after('activeChange', this._fireGetAllowedMimeTypesEvent, this);
             this.after('activeChange', this._fireGetMaxFileSizeLimitEvent, this);
+            this.after('activeChange', this._fireCheckPermissions, this);
+            this.after('isFormActiveChange', this._uiToggleFormState, this);
+        },
+
+        render: function () {
+            var container = this.get('container');
+
+            container.setHTML(this.template({}));
+            container.getDOMNode().multiple = true;
+
+            return this;
+        },
+
+        /**
+         * Fires the `mfuCheckPermissions` event
+         *
+         * @method _fireCheckPermissions
+         * @protected
+         * @param event {Object} event facade
+         */
+        _fireCheckPermissions: function (event) {
+            if (!event.newVal) {
+                return;
+            }
+
+            /**
+             * Checks for content create permissions for a logged in user.
+             * Listened by {{#crossLink "mfu.Plugin.FileUploadService"}}mfu.Plugin.FileUploadService{{/crossLink}}
+             *
+             * @event mfuCheckPermissions
+             * @param config.permissionsStateCallback {Function} a callback to be invoked when permissions state is received
+             * @param config.errorCallback {Function} an error callback
+             */
+            this.fire('mfuCheckPermissions', {
+                permissionsStateCallback: this._setFormActiveState.bind(this),
+                errorCallback: this._uiShowError.bind(this)
+            });
+        },
+
+        /**
+         * Sets the `isFormActive` attribute value
+         *
+         * @method _setFormActiveState
+         * @protected
+         * @param isFormActive {Boolean} is form active flag
+         */
+        _setFormActiveState: function (isFormActive) {
+            this._set('isFormActive', isFormActive);
+        },
+
+        /**
+         * Toggles the form container availability state
+         *
+         * @method _uiToggleFormState
+         * @protected
+         * @param event {Object} event facade
+         */
+        _uiToggleFormState: function (event) {
+            const methodName = event.newVal ? 'removeClass' : 'addClass';
+
+            this.get('container').one(SELECTOR_FORM)[methodName](CLASS_INACTIVE);
+        },
+
+        /**
+         * Displays an error notification bar
+         *
+         * @method _uiShowError
+         * @protected
+         */
+        _uiShowError: function () {
+            /**
+             * Displays a notification in the notification bar
+             * Listened by {{#crossLink "eZ.Plugin.NotificationHub"}}eZ.Plugin.NotificationHub{{/crossLink}}
+             *
+             * @event notify
+             * @param config.notification {Object} notification config
+             * @param config.notification.text {String} notification message text
+             * @param config.notification.identifier {String} notification identifier
+             * @param config.notification.state {String} notification state
+             * @param config.notification.timeout {Number} notification timeout (in seconds)
+             */
+            this.fire('notify', {
+                notification: {
+                    text: 'Cannot check the permissions for uploading files',
+                    identifier: 'mfu-file-upload-permission-check-error',
+                    state: 'error',
+                    timeout: 0,
+                }
+            });
         },
 
         /**
@@ -93,15 +184,6 @@ YUI.add('mfu-uploadform-view', function (Y) {
                 .setHTML(this.get('maxFileSizeText').replace('{filesize}', this._formatFileSize(limit)));
         },
 
-        render: function () {
-            var container = this.get('container');
-
-            container.setHTML(this.template({}));
-            container.getDOMNode().multiple = true;
-
-            return this;
-        },
-
         /**
          * Fires the `mfuGetAllowedMimeTypes` event
          *
@@ -134,7 +216,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
          * @param allowedMimeTypes {Array} list of allowed mime types
          */
         _uiUpdateAcceptAttribute: function (allowedMimeTypes) {
-            const inputFileField = this.get('container').one(SELECTOR_INPUT_FILES);
+            const inputFileField = this.get('container').one(SELECTOR_INPUT);
 
             if (!allowedMimeTypes || !allowedMimeTypes.length) {
                 inputFileField.removeAttribute('accept');
@@ -157,7 +239,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
 
             this._uiRemoveDragState();
 
-            if (!this._checkHasEventFileData(event) || !onDropCallback(event)) {
+            if (this.get('container').one(SELECTOR_INACTIVE) || !this._checkHasEventFileData(event) || !onDropCallback(event)) {
                 return;
             }
         },
@@ -252,6 +334,19 @@ YUI.add('mfu-uploadform-view', function (Y) {
              */
             maxFileSizeText: {
                 value: '(Max file size: {filesize})',
+                readOnly: true
+            },
+
+            /**
+             * Form active state flag
+             *
+             * @attribute
+             * @type {Boolean}
+             * @default false
+             * @readOnly
+             */
+            isFormActive: {
+                value: false,
                 readOnly: true
             },
         }
