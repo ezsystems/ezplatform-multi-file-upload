@@ -1,4 +1,6 @@
 parameters:
+    ez_systems.multifile_upload.rest.path_prefix: /api/multifileupload/v1
+
     ez_systems.multifile_upload.location_mappings: []
 
     ez_systems.multifile_upload.default_mappings:

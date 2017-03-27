@@ -1,5 +1,9 @@
 parameters:
     ez_systems.multifile_upload.provider.content_type_mappings.class: EzSystems\MultiFileUploadBundle\ApplicationConfig\Providers\ContentTypeMappings
+    ez_systems.multifile_upload.controller.rest.class: EzSystems\MultiFileUploadBundle\Controller\RestController
+    ez_systems.multifile_upload.service.permission_report.class: EzSystems\MultiFileUpload\Core\Repository\PermissionReportService
+    ez_systems.multifile_upload.service.permission_resolver.class: eZ\Publish\Core\Repository\Permission\PermissionResolver
+    ez_systems.multifile_upload.rest.output.value_object_visitor.permission_report.class: EzSystems\MultiFileUpload\Core\REST\Server\Output\ValueObjectVisitor\PermissionReport
 
 services:
     ez_systems.multifile_upload.provider.content_type_mappings:
@@ -11,3 +15,28 @@ services:
             - '%ez_systems.multifile_upload.max_file_size%'
         tags:
             - { name: ezsystems.platformui.application_config_provider, key: 'multiFileUpload' }
+
+    ez_systems.multifile_upload.service.permission_report:
+        class: '%ez_systems.multifile_upload.service.permission_report.class%'
+        arguments:
+            - '@ez_systems.multifile_upload.service.permission_resolver'
+            - '@ezpublish.api.service.content'
+            - '@ezpublish.api.service.location'
+
+    ez_systems.multifile_upload.controller.rest:
+        class: '%ez_systems.multifile_upload.controller.rest.class%'
+        arguments:
+            - '@ezpublish.api.service.content_type'
+            - '@ezpublish.api.service.location'
+            - '@ez_systems.multifile_upload.service.permission_report'
+
+    # todo: remove once kernel bundle exposes PermissionResolver as a DI service
+    ez_systems.multifile_upload.service.permission_resolver:
+        class: '%ez_systems.multifile_upload.service.permission_resolver.class%'
+        factory: ['@ezpublish.api.inner_repository', 'getPermissionResolver']
+
+    ez_systems.multifile_upload.rest.output.value_object_visitor.permission_report:
+        parent: ezpublish_rest.output.value_object_visitor.base
+        class: '%ez_systems.multifile_upload.rest.output.value_object_visitor.permission_report.class%'
+        tags:
+            - { name: ezpublish_rest.output.value_object_visitor, type: EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport }
