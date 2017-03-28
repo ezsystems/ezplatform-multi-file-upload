@@ -1,7 +1,7 @@
 {
     "name": "ezsystems/ezplatform-multi-file-upload",
     "description": "Multi File Upload for eZ Platform",
-    "type": "ezstudio-bundle",
+    "type": "ezplatform-bundle",
     "authors": [
         {
         "name": "eZ Systems",
