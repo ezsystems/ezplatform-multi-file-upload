@@ -145,7 +145,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
              */
             this.fire('notify', {
                 notification: {
-                    text: 'Error occurred when refreshing sub items list: ' + error,
+                    text: this.get('subitemsListRefreshingErrorText').replace('{error}', error),
                     identifier: 'mfu-subitems-list-refresh-error-' + Date.now(),
                     state: 'error',
                     timeout: 0,
@@ -201,7 +201,19 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
              * @attribute subitemBoxView
              * @type {mfu.SubitemBoxView}
              */
-            subitemBoxView: {}
+            subitemBoxView: {},
+
+            /**
+             * The sub items list refreshing error text
+             *
+             * @attribute subitemsListRefreshingErrorText
+             * @type {String}
+             * @readOnly
+             */
+            subitemsListRefreshingErrorText: {
+                valueFn: () => Y.eZ.trans('subitems.list.refreshing.error', {}, 'pluginfileupload'),
+                readOnly: true,
+            },
         }
     });
 

@@ -377,11 +377,10 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
              *
              * @attribute uploadedText
              * @type {String}
-             * @default 'Uploaded ({uploaded}/{total})'
              * @readOnly
              */
             uploadedText: {
-                value: 'Uploaded ({uploaded}/{total})',
+                valueFn: () => Y.eZ.trans('uploaded.info', {}, 'uploadpopup'),
                 readOnly: true,
             },
         }

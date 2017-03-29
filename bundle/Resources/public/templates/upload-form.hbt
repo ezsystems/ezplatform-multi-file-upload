@@ -7,13 +7,13 @@
     </defs>
 </svg>
 <div class="mfu-form__container mfu-form--inactive">
-    <h3 class="mfu-form__call-to-action">Drag your files here</h3>
-    <label class="mfu-form__other-action" for="mfu-files">or if you prefer</label>
+    <h3 class="mfu-form__call-to-action">{{ translate 'drag.your.files.here' 'uploadform' }}</h3>
+    <label class="mfu-form__other-action" for="mfu-files">{{ translate 'or' 'uploadform' }}</label>
     <button class="mfu-form___btn--select-files">
         <span class="mfu-form__btn-label--select-files">
-            <svg class="mfu-form__icon-upload"><use xlink:href="#icon-mfu-upload"></use></svg> Choose files
+            <svg class="mfu-form__icon-upload"><use xlink:href="#icon-mfu-upload"></use></svg> {{ translate 'choose.files' 'uploadform' }}
         </span>
     </button>
     <input class="mfu-form__input mfu--hidden" id="mfu-files" type="file" name="files[]" multiple />
-    <small class="mfu-form__limit-info">(Max file size 2MB)</small>
+    <small class="mfu-form__limit-info"></small>
 </div>

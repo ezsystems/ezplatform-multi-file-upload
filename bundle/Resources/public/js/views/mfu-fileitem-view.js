@@ -225,7 +225,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
          */
         _showFileUploadError: function (event) {
             const errorText = event.message ?
-                `Cannot upload a file: ${event.message}` :
+                this.get('fileUploadErrorText').replace('{message}', event.message) :
                 this.get('fileUploadFailedText')
                     .replace('{statusCode}', event.target.status)
                     .replace('{statusText}', event.target.statusText);
@@ -532,7 +532,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileUploadStatusText: {
-                value: '({loaded} of {total})',
+                valueFn: () => Y.eZ.trans('file.upload.status', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -544,7 +544,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileUploadDoneText: {
-                value: '{total} uploaded',
+                valueFn: () => Y.eZ.trans('file.upload.done', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -556,7 +556,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileStartPublishText: {
-                value: 'Publishing file: {filename}',
+                valueFn: () => Y.eZ.trans('publishing.file', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -568,7 +568,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             filePublishedText: {
-                value: 'The file: {filename} has been published',
+                valueFn: () => Y.eZ.trans('file.published', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -580,7 +580,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileDeletedText: {
-                value: 'The file has been deleted: {filename}',
+                valueFn: () => Y.eZ.trans('file.deleted', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -592,7 +592,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileUploadAbortedText: {
-                value: 'The upload of {filename} has been aborted',
+                valueFn: () => Y.eZ.trans('file.upload.aborted', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -604,7 +604,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileStartDeleteText: {
-                value: 'Deleting file: {filename}',
+                valueFn: () => Y.eZ.trans('deleting.file', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -616,7 +616,19 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileUploadFailedText: {
-                value: 'File upload failed - [{statusCode}] {statusText}',
+                valueFn: () => Y.eZ.trans('file.upload.failed', {}, 'fileuploaditem'),
+                readOnly: true,
+            },
+
+            /**
+             * File upload error text
+             *
+             * @attribute fileUploadErrorText
+             * @type {String}
+             * @readOnly
+             */
+            fileUploadErrorText: {
+                valueFn: () => Y.eZ.trans('file.upload.error', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -628,7 +640,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileTypeNotAllowedText: {
-                value: 'File Type not allowed: {filename}',
+                valueFn: () => Y.eZ.trans('file.type.not.allowed', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
@@ -640,7 +652,7 @@ YUI.add('mfu-fileitem-view', function (Y) {
              * @readOnly
              */
             fileSizeExceededText: {
-                value: 'File Size not allowed: {filesize} - {filename}',
+                valueFn: () => Y.eZ.trans('file.size.not.allowed', {}, 'fileuploaditem'),
                 readOnly: true,
             },
 
