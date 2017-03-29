@@ -27,7 +27,7 @@
 .ez-view-mfuuploadformview .mfu-form__container:after {
     z-index: -1;
     background: rgba(0,0,0,0);
-    transition: .3s background cubic-bezier(.25,.8,.25,1);
+    transition: .3s all cubic-bezier(.25,.8,.25,1);
     content: '';
     display: block;
     width: 100%;
@@ -36,12 +36,12 @@
     top: 0;
     left: 0;
     border-radius: .5rem;
-    z-index: 100;
 }
 
 .ez-view-mfuuploadformview .mfu-form__container.mfu-form--inactive:after {
     background: rgba(0,0,0,.3);
     cursor: not-allowed;
+    z-index: 100;
 }
 
 .ez-platformui-app .ez-view-mfuuploadformview .mfu-form___btn--select-files {
