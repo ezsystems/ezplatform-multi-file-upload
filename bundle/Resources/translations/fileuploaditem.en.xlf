@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file date="2017-03-29T12:06:37Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="ee36a21fa2f78f5da59f5792d80408b45e29a983" resname="deleting.file">
+        <source>Deleting file: {filename}</source>
+        <target>Deleting file: {filename}</target>
+        <note>key: deleting.file</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1468d345f79377ac34081ad35b68b3bf0617700f" resname="file.deleted">
+        <source>The file has been deleted: {filename}</source>
+        <target>The file has been deleted: {filename}</target>
+        <note>key: file.deleted</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4597389311e6a797708b8370acd805caa62b8588" resname="file.published">
+        <source>The file has been published: {filename}</source>
+        <target>The file has been published: {filename}</target>
+        <note>key: file.published</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="504af893987c356494d73f1c0f1111d6b7bd54d2" resname="file.size.not.allowed">
+        <source>File Size not allowed: {filesize} - {filename}</source>
+        <target>File Size not allowed: {filesize} - {filename}</target>
+        <note>key: file.size.not.allowed</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2d2664ca280b4cfaf71cb0e4270343b59b6fa4ad" resname="file.type.not.allowed">
+        <source>File Type not allowed: {filename}</source>
+        <target>File Type not allowed: {filename}</target>
+        <note>key: file.type.not.allowed</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ecbb6f130d3314def143f1b5c778b31baa1adbc5" resname="file.upload.aborted">
+        <source>The file upload has been aborted: {filename}</source>
+        <target>The file upload has been aborted: {filename}</target>
+        <note>key: file.upload.aborted</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6760bdb1386b6a55665ee566d1dc52d0333b081a" resname="file.upload.done">
+        <source>{total} uploaded</source>
+        <target>{total} uploaded</target>
+        <note>key: file.upload.done</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fb35c9fefec0f9ed7688c8ed346186612432a6b1" resname="file.upload.error">
+        <source>Cannot upload a file: {message}</source>
+        <target>Cannot upload a file: {message}</target>
+        <note>key: file.upload.error</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="819ce4269fd40c1c71c8af8c5a7285657973a772" resname="file.upload.failed">
+        <source>File upload failed - [{statusCode}] {statusText}</source>
+        <target>File upload failed - [{statusCode}] {statusText}</target>
+        <note>key: file.upload.failed</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8d2d4a95cd909c2f8dfb0d0394824fa9ad34e946" resname="file.upload.status">
+        <source>({loaded} of {total})</source>
+        <target>({loaded} of {total})</target>
+        <note>key: file.upload.status</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3b5c9a1c511d6150f8e567ea63ec8658609f7c94" resname="publishing.file">
+        <source>Publishing file: {filename}</source>
+        <target>Publishing file: {filename}</target>
+        <note>key: publishing.file</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

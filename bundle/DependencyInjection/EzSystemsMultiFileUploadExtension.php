@@ -12,8 +12,9 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Yaml\Yaml;
+use EzSystems\PlatformUIBundle\DependencyInjection\PlatformUIExtension;
 
-class EzSystemsMultiFileUploadExtension extends ConfigurableExtension implements PrependExtensionInterface
+class EzSystemsMultiFileUploadExtension extends ConfigurableExtension implements PrependExtensionInterface, PlatformUIExtension
 {
     /** These keys are used to overwrite parameters */
     const CONFIGURATION_PARAMETERS = [
@@ -80,5 +81,15 @@ class EzSystemsMultiFileUploadExtension extends ConfigurableExtension implements
         $config = Yaml::parse(file_get_contents($cssConfigFile));
         $container->prependExtensionConfig('ez_platformui', $config);
         $container->addResource(new FileResource($cssConfigFile));
+    }
+
+    public function getTranslationDomains()
+    {
+        return [
+            'uploadform',
+            'uploadpopup',
+            'fileuploaditem',
+            'pluginfileupload'
+        ];
     }
 }

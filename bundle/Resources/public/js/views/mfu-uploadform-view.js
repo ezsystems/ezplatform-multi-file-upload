@@ -139,7 +139,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
              */
             this.fire('notify', {
                 notification: {
-                    text: 'Cannot check the permissions for uploading files',
+                    text: this.get('checkPermissionsErrorText'),
                     identifier: 'mfu-file-upload-permission-check-error',
                     state: 'error',
                     timeout: 0,
@@ -322,7 +322,7 @@ YUI.add('mfu-uploadform-view', function (Y) {
              */
             onDropCallback: {
                 valueFn: () => true,
-                writeOnce: 'initOnly'
+                writeOnce: 'initOnly',
             },
 
             /**
@@ -333,21 +333,33 @@ YUI.add('mfu-uploadform-view', function (Y) {
              * @readOnly
              */
             maxFileSizeText: {
-                value: '(Max file size: {filesize})',
-                readOnly: true
+                valueFn: () => Y.eZ.trans('max.file.size.info', {}, 'uploadform'),
+                readOnly: true,
             },
 
             /**
              * Form active state flag
              *
-             * @attribute
+             * @attribute isFormActive
              * @type {Boolean}
              * @default false
              * @readOnly
              */
             isFormActive: {
                 value: false,
-                readOnly: true
+                readOnly: true,
+            },
+
+            /**
+             * Check permissions error text
+             *
+             * @attribute checkPermissionsErrorText
+             * @type {String}
+             * @readOnly
+             */
+            checkPermissionsErrorText: {
+                valueFn: () => Y.eZ.trans('file.upload.permissions.check.error', {}, 'uploadform'),
+                readOnly: true,
             },
         }
     });

@@ -13,6 +13,7 @@ system:
                         - 'ez-contentinfomodel'
                         - 'ez-viewservicebaseplugin'
                         - 'ez-pluginregistry'
+                        - 'ez-translator'
                     dependencyOf:
                         - 'ez-locationviewview'
                         - 'ez-locationviewviewservice'
@@ -22,6 +23,7 @@ system:
                         - 'mfu-uploadform-view'
                         - 'mfu-uploadpopup-view'
                         - 'ez-subitemboxview'
+                        - 'ez-translator'
                         - 'mfusubitemboxview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-subitembox-view.js
                 mfusubitemboxview-ez-template:
@@ -30,6 +32,7 @@ system:
                 mfu-uploadform-view:
                     requires:
                         - 'ez-templatebasedview'
+                        - 'ez-translator'
                         - 'mfu-text-format-helper'
                         - 'mfuuploadformview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-uploadform-view.js
@@ -41,6 +44,7 @@ system:
                         - 'mfu-uploadform-view'
                         - 'mfu-fileitem-view'
                         - 'event-tap'
+                        - 'ez-translator'
                         - 'mfuuploadpopupview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-uploadpopup-view.js
                 mfuuploadpopupview-ez-template:
@@ -49,6 +53,7 @@ system:
                 mfu-fileitem-view:
                     requires:
                         - 'ez-templatebasedview'
+                        - 'ez-translator'
                         - 'mfu-text-format-helper'
                         - 'mfufileitemview-ez-template'
                     path: %multifile_upload.public_dir%/js/views/mfu-fileitem-view.js
