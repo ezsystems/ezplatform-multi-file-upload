@@ -34,7 +34,26 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->children()
                 ->arrayNode('location_mappings')
-                    ->info('Let\'s you assign mappings bound to location')
+                    ->info('Let\'s you assign mappings bound to a location')
+                    ->example([
+                        [
+                            'content_type_identifier' => 'gallery',
+                            'mime_type_filter' => [
+                                'image/*',
+                            ],
+                            'mappings' => [
+                                [
+                                    'mime_types' => [
+                                        'image/jpeg',
+                                        'image/png',
+                                    ],
+                                    'content_type_identifier' => 'image',
+                                    'content_field_identifier' => 'image',
+                                    'name_field_identifier' => 'name',
+                                ],
+                            ],
+                        ],
+                    ])
                     ->prototype('array')
                         ->children()
                             ->scalarNode('content_type_identifier')
@@ -51,9 +70,10 @@ class Configuration implements ConfigurationInterface
                                 ->cannotBeEmpty()
                                 ->prototype('array')
                                     ->children()
-                                        ->scalarNode('mime_type')
+                                        ->arrayNode('mime_types')
                                             ->isRequired()
                                             ->cannotBeEmpty()
+                                            ->prototype('scalar')->end()
                                         ->end()
                                         ->scalarNode('content_type_identifier')
                                             ->isRequired()
@@ -77,9 +97,10 @@ class Configuration implements ConfigurationInterface
                     ->info('These mappings are used as a fallback in case there are no entries under `locations` key')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('mime_type')
+                            ->arrayNode('mime_types')
                                 ->isRequired()
                                 ->cannotBeEmpty()
+                                ->prototype('scalar')->end()
                             ->end()
                             ->scalarNode('content_type_identifier')
                                 ->isRequired()
@@ -98,22 +119,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('fallback_content_type')
                     ->info('This content type will be used for files with no mime type mapping')
-                    ->validate()
-                        ->always(function($v){
-                            if (
-                                empty($v['content_type_identifier'])
-                                || empty($v['content_field_identifier'])
-                            ) {
-                                $v = [
-                                    'content_type_identifier' => null,
-                                    'content_field_identifier' => null,
-                                    'name_field_identifier' => null,
-                                ];
-                            }
-
-                            return $v;
-                        })
-                    ->end()
                     ->children()
                         ->scalarNode('content_type_identifier')
                             ->defaultNull()
@@ -122,7 +127,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultNull()
                         ->end()
                         ->scalarNode('name_field_identifier')
-                            ->defaultValue('name') // should work for most content types
+                            ->defaultNull()
                         ->end()
                     ->end()
                 ->end()
