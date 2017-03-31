@@ -595,10 +595,21 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          *
          * @method _discoverDataFieldIdentifier
          * @protected
-         * @return {String} content type identifier
+         * @return {String} data field identifier
          */
         _discoverDataFieldIdentifier: function () {
             return this._detectedContentTypeMapping.contentFieldIdentifier;
+        },
+
+        /**
+         * Discovers name field identifier
+         *
+         * @method _discoverNameFieldIdentifier
+         * @protected
+         * @return {String} name field identifier
+         */
+        _discoverNameFieldIdentifier: function () {
+            return this._detectContentTypeMapping.nameFieldIdentifier || 'name';
         },
 
         /**
@@ -610,7 +621,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @return {Object} updated data hash
          */
         _updateContentStructWithFileMeta: function (data) {
-            data.struct.addField('name', data.file.name);
+            data.struct.addField(this._discoverNameFieldIdentifier(), data.file.name);
             data.struct.addField(this._discoverDataFieldIdentifier(), {
                 fileName: data.file.name,
                 data: this.get('fileReader').result.replace(/^.*;base64,/, ''),
