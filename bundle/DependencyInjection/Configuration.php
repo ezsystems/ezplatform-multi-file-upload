@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->children()
                 ->arrayNode('location_mappings')
-                    ->info('Let\'s you assign mappings binded to location')
+                    ->info('Let\'s you assign mappings bound to location')
                     ->prototype('array')
                         ->children()
                             ->scalarNode('content_type_identifier')
@@ -51,9 +51,22 @@ class Configuration implements ConfigurationInterface
                                 ->cannotBeEmpty()
                                 ->prototype('array')
                                     ->children()
-                                        ->scalarNode('mime_type')->isRequired()->cannotBeEmpty()->end()
-                                        ->scalarNode('content_type_identifier')->isRequired()->cannotBeEmpty()->end()
-                                        ->scalarNode('content_field_identifier')->isRequired()->cannotBeEmpty()->end()
+                                        ->scalarNode('mime_type')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
+                                        ->scalarNode('content_type_identifier')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
+                                        ->scalarNode('content_field_identifier')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
+                                        ->scalarNode('name_field_identifier')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
                                     ->end()
                                 ->end()
                             ->end()
@@ -76,17 +89,40 @@ class Configuration implements ConfigurationInterface
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
+                            ->scalarNode('name_field_identifier')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()
                 ->arrayNode('fallback_content_type')
                     ->info('This content type will be used for files with no mime type mapping')
+                    ->validate()
+                        ->always(function($v){
+                            if (
+                                empty($v['content_type_identifier'])
+                                || empty($v['content_field_identifier'])
+                            ) {
+                                $v = [
+                                    'content_type_identifier' => null,
+                                    'content_field_identifier' => null,
+                                    'name_field_identifier' => null,
+                                ];
+                            }
+
+                            return $v;
+                        })
+                    ->end()
                     ->children()
                         ->scalarNode('content_type_identifier')
                             ->defaultNull()
                         ->end()
                         ->scalarNode('content_field_identifier')
                             ->defaultNull()
+                        ->end()
+                        ->scalarNode('name_field_identifier')
+                            ->defaultValue('name') // should work for most content types
                         ->end()
                     ->end()
                 ->end()

@@ -41,7 +41,7 @@ class ContentTypeMappings
     }
 
     /**
-     * Returns configuration structure compatbile with PlatformUI.
+     * Returns configuration structure compatible with PlatformUI.
      *
      * @return array
      */
@@ -84,6 +84,7 @@ class ContentTypeMappings
             'mimeType' => $mapping['mime_type'],
             'contentTypeIdentifier' => $mapping['content_type_identifier'],
             'contentFieldIdentifier' => $mapping['content_field_identifier'],
+            'nameFieldIdentifier' => $mapping['name_field_identifier'],
         ];
     }
 
@@ -97,6 +98,7 @@ class ContentTypeMappings
         return [
             'contentTypeIdentifier' => $fallbackContentType['content_type_identifier'],
             'contentFieldIdentifier' => $fallbackContentType['content_field_identifier'],
+            'nameFieldIdentifier' => $fallbackContentType['name_field_identifier'],
         ];
     }
 }
