@@ -277,13 +277,13 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
             const locationIdentifier = this.get('host').get('contentType').get('identifier');
             const locationMappings = this.get('contentTypeByLocationMappings');
             const mappedLocation = locationMappings.find(item => item.contentTypeIdentifier === locationIdentifier);
-            const uniqueIdentifiers = mappedLocation ?
-                [...new Set(mappedLocation.mappings.map(item => item.contentTypeIdentifier))] :
-                [];
-            let promises = [this._loadContentTypeByIdentifier(defaultContentTypeIdentifier)];
+            const uniqueIdentifiers = mappedLocation ? [...new Set(mappedLocation.mappings.map(item => item.contentTypeIdentifier))] : [];
+            let promises = [];
 
             if (uniqueIdentifiers.length) {
                 promises = uniqueIdentifiers.map(identifier => this._loadContentTypeByIdentifier(identifier));
+            } else {
+                promises = [this._loadContentTypeByIdentifier(defaultContentTypeIdentifier)];
             }
 
             Promise.all(promises)
@@ -498,7 +498,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
                 return true;
             }
 
-            return !!locationMapping.mappings.find(item => item.mimeType === file.type);
+            return !!this._findMimeTypeMapping(locationMapping.mappings, file);
         },
 
         /**
@@ -538,9 +538,9 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @protected
          * @param mappings {Array} list of mappings
          * @param file {File} File object
-         * @return {Boolean}
+         * @return {Object}
          */
-        _findMimeTypeMapping: (mappings, file) => mappings.find(item => item.mimeType === file.type),
+        _findMimeTypeMapping: (mappings, file) => mappings.find(item => item.mimeTypes.find(type => type === file.type)),
 
         /**
          * Resolves/rejects a promise
