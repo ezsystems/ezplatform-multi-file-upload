@@ -20,46 +20,48 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 ],
                 'mappings' => [
                     [
-                        'mime_type' => 'application/msword',
-                        'content_type_identifier' => 'file',
-                        'content_field_identifier' => 'file',
-                    ],
-                    [
-                        'mime_type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'content_type_identifier' => 'file',
-                        'content_field_identifier' => 'file',
+                        'mime_types' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'content_type_identifier' => 'image',
+                        'content_field_identifier' => 'image',
+                        'name_field_identifier' => 'name',
                     ],
                 ],
             ],
             [
                 'content_type_identifier' => 3,
                 'mime_type_filter' => [
-                    'video/*',
+                    'application/msword',
                 ],
                 'mappings' => [
                     [
-                        'mime_type' => 'application/msword',
+                        'mime_types' => [
+                            'application/msword'
+                        ],
                         'content_type_identifier' => 'file',
                         'content_field_identifier' => 'file',
+                        'name_field_identifier' => 'name',
                     ],
                 ],
             ],
         ];
         $defaultMappings = [
             [
-                'mime_type' => 'application/msword',
+                'mime_types' => [
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                ],
                 'content_type_identifier' => 'file',
                 'content_field_identifier' => 'file',
-            ],
-            [
-                'mime_type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'content_type_identifier' => 'file',
-                'content_field_identifier' => 'file',
+                'name_field_identifier' => 'name',
             ],
         ];
         $fallbackContentType = [
             'content_type_identifier' => 'file',
             'content_field_identifier' => 'file',
+            'name_field_identifier' => 'name',
         ];
         $maxFileSize = 64000000;
 
@@ -80,51 +82,53 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                     ],
                     'mappings' => [
                         [
-                            'mimeType' => 'application/msword',
-                            'contentTypeIdentifier' => 'file',
-                            'contentFieldIdentifier' => 'file',
-                        ],
-                        [
-                            'mimeType' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                            'contentTypeIdentifier' => 'file',
-                            'contentFieldIdentifier' => 'file',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/png',
+                            ],
+                            'contentTypeIdentifier' => 'image',
+                            'contentFieldIdentifier' => 'image',
+                            'nameFieldIdentifier' => 'name',
                         ],
                     ],
                 ],
                 [
                     'contentTypeIdentifier' => 3,
                     'mimeTypeFilter' => [
-                        'video/*',
+                        'application/msword',
                     ],
                     'mappings' => [
                         [
-                            'mimeType' => 'application/msword',
+                            'mimeTypes' => [
+                                'application/msword',
+                            ],
                             'contentTypeIdentifier' => 'file',
                             'contentFieldIdentifier' => 'file',
+                            'nameFieldIdentifier' => 'name',
                         ],
                     ],
                 ],
             ],
             'defaultMappings' => [
                 [
-                    'mimeType' => 'application/msword',
+                    'mimeTypes' => [
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    ],
                     'contentTypeIdentifier' => 'file',
                     'contentFieldIdentifier' => 'file',
-                ],
-                [
-                    'mimeType' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'contentTypeIdentifier' => 'file',
-                    'contentFieldIdentifier' => 'file',
+                    'nameFieldIdentifier' => 'name',
                 ],
             ],
             'fallbackContentType' => [
                 'contentTypeIdentifier' => 'file',
                 'contentFieldIdentifier' => 'file',
+                'nameFieldIdentifier' => 'name',
             ],
             'maxFileSize' => 64000000,
         ];
 
-        $this->assertArraySubset($contentTypeMappingsConfig->getConfig(), $expectedArray);
+        $this->assertArraySubset($expectedArray, $contentTypeMappingsConfig->getConfig());
     }
 
     public function testGetConfigWithEmptyValues()
@@ -134,6 +138,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
         $fallbackContentType = [
             'content_type_identifier' => null,
             'content_field_identifier' => null,
+            'name_field_identifier' => null,
         ];
         $maxFileSize = null;
 
@@ -145,6 +150,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
             'fallbackContentType' => [
                 'contentTypeIdentifier' => null,
                 'contentFieldIdentifier' => null,
+                'nameFieldIdentifier' => null,
             ],
             'maxFileSize' => null
         ];
