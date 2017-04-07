@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-03-29T12:06:37Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-04-07T13:32:59Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -42,6 +42,12 @@
         <note>key: file.upload.aborted</note>
         <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
       </trans-unit>
+      <trans-unit id="341815cb4eb951014d0172c0d6b84c18710a5785" resname="file.upload.content.type.uknown">
+        <source>The file has unknown MIME type</source>
+        <target>The file has unknown MIME type</target>
+        <note>key: file.upload.content.type.uknown</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6760bdb1386b6a55665ee566d1dc52d0333b081a" resname="file.upload.done">
         <source>{total} uploaded</source>
         <target>{total} uploaded</target>
@@ -64,6 +70,12 @@
         <source>({loaded} of {total})</source>
         <target>({loaded} of {total})</target>
         <note>key: file.upload.status</note>
+        <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8948c06e80e91b86d92708c2a3b05bd3118d5561" resname="file.upload.unexpected.error">
+        <source>Unexpected error</source>
+        <target state="new">Unexpected error</target>
+        <note>key: file.upload.unexpected.error</note>
         <jms:reference-file>./Resources/public/js/views/mfu-fileitem-view.js</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b5c9a1c511d6150f8e567ea63ec8658609f7c94" resname="publishing.file">
