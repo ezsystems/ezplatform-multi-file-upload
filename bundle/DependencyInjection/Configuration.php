@@ -11,7 +11,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -20,7 +20,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->validate()
-            ->always(function($v){
+            ->always(function ($v) {
                 if (empty($v['location_mappings'])) {
                     unset($v['location_mappings']);
                 }
@@ -99,7 +99,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('fallback_content_type')
                     ->info('This content type will be used for files with no mime type mapping')
                     ->validate()
-                        ->always(function($v){
+                        ->always(function ($v) {
                             if (
                                 empty($v['content_type_identifier'])
                                 || empty($v['content_field_identifier'])

@@ -146,7 +146,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 'contentTypeIdentifier' => null,
                 'contentFieldIdentifier' => null,
             ],
-            'maxFileSize' => null
+            'maxFileSize' => null,
         ];
 
         $this->assertArraySubset($contentTypeMappingsConfig->getConfig(), $expectedArray);

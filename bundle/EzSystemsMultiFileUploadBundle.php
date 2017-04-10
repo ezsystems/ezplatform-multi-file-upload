@@ -8,7 +8,7 @@ namespace EzSystems\MultiFileUploadBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * {@inheritDoc}
+ * {@inheritdoc}
  */
 class EzSystemsMultiFileUploadBundle extends Bundle
 {
