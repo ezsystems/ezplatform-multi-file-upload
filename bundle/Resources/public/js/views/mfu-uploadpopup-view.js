@@ -143,7 +143,7 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
          * @param files {FileList} a list of all the local files available on the data transfer
          */
         _renderListItems: function (files) {
-            files = [...files].map(this._buildFileHash);
+            files = ([].slice.call(files)).map(this._buildFileHash);
 
             const fragment = Y.one(document.createDocumentFragment());
             const items = files.reduce(this._renderFileItem.bind(this), fragment);
