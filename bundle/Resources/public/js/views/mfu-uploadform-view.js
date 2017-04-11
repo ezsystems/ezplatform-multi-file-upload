@@ -26,7 +26,6 @@ YUI.add('mfu-uploadform-view', function (Y) {
 
     EVENTS[SELECTOR_BTN] = {tap: '_uiSelectFiles'};
     EVENTS[SELECTOR_INPUT] = {
-        input: '_uploadFiles',
         change: '_uploadFiles'
     };
     EVENTS[SELECTOR_FORM_ACTIVE] = {

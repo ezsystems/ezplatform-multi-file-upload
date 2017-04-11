@@ -224,15 +224,31 @@ YUI.add('mfu-fileitem-view', function (Y) {
          * @param event {Object} event facade
          */
         _showFileUploadError: function (event) {
-            const errorText = event.message ?
-                this.get('fileUploadErrorText').replace('{message}', event.message) :
-                this.get('fileUploadFailedText')
-                    .replace('{statusCode}', event.target.status)
-                    .replace('{statusText}', event.target.statusText);
+            let errorText = this.get('fileUploadUnexpectedErrorText');
+
+            if (event.message) {
+                errorText = this.get('fileUploadErrorText')
+                    .replace('{message}', `${this._getFileName()} - ${event.message}`);
+            } else if (event.target && event.target.hasOwnProperty('status') && event.target.hasOwnProperty('statusText')) {
+                let status = event.target.status ?
+                    event.target.status :
+                    'N/A';
+                let message = event.target.statusText ?
+                    event.target.statusText :
+                    this.get('fileUploadUknownContentTypeText');
+
+                errorText = this.get('fileUploadFailedText')
+                    .replace('{statusCode}', status)
+                    .replace('{statusText}', `${this._getFileName()} - ${message}`);
+            } else if (event.document) {
+                errorText = this.get('fileUploadFailedText')
+                    .replace('{statusCode}', event.document.ErrorMessage.errorCode)
+                    .replace('{statusText}', `${this._getFileName()} - ${event.document.ErrorMessage.errorDescription}`);
+            }
 
             this._fireNotifyEvent({
                 text: errorText,
-                identifier: 'mfu-upload-failed',
+                identifier: 'mfu-upload-failed-' + this._yuid,
                 state: 'error',
                 timeout: 0,
             });
@@ -633,6 +649,30 @@ YUI.add('mfu-fileitem-view', function (Y) {
             },
 
             /**
+             * File upload unknown content type text
+             *
+             * @attribute fileUploadUknownContentTypeText
+             * @type {String}
+             * @readOnly
+             */
+            fileUploadUknownContentTypeText: {
+                valueFn: () => Y.eZ.trans('file.upload.content.type.uknown', {}, 'fileuploaditem'),
+                readOnly: true,
+            },
+
+            /**
+             * File upload unexpected error text
+             *
+             * @attribute fileUploadUnexpectedErrorText
+             * @type {String}
+             * @readOnly
+             */
+            fileUploadUnexpectedErrorText: {
+                valueFn: () => Y.eZ.trans('file.upload.unexpected.error', {}, 'fileuploaditem'),
+                readOnly: true,
+            },
+
+            /**
              * File type not allowed error text
              *
              * @attribute fileTypeNotAllowedText
@@ -655,7 +695,6 @@ YUI.add('mfu-fileitem-view', function (Y) {
                 valueFn: () => Y.eZ.trans('file.size.not.allowed', {}, 'fileuploaditem'),
                 readOnly: true,
             },
-
         }
     });
 });

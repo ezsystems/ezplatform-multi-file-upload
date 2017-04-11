@@ -229,14 +229,6 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
         initializer: function () {
             const host = this.get('host');
 
-            /**
-             * Detected content type mapping
-             *
-             * @property _detectedContentTypeMapping
-             * @type {Object}
-             */
-            this._detectedContentTypeMapping = {};
-
             this._setContentTypeMappings();
 
             host.on('mfuFileItemView:mfuUploadFile', this._initFileUpload, this);
@@ -510,9 +502,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @return {Promise}
          */
         _detectContentType: function (file) {
-            this._detectedContentTypeMapping = this._detectContentTypeMapping(file);
-
-            return this._loadContentTypeByIdentifier(this._detectedContentTypeMapping.contentTypeIdentifier);
+            return this._loadContentTypeByIdentifier(this._detectContentTypeMapping(file).contentTypeIdentifier);
         },
 
         /**
@@ -593,35 +583,16 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @return {Promise}
          */
         _transformFileToBase64: function (data) {
-            const fileReader = this.get('fileReader');
+            const fileReader = new FileReader();
 
             return new Promise((resolve, reject) => {
-                fileReader.addEventListener('load', resolve.bind(this, data), false);
+                fileReader.addEventListener('load', resolve.bind(this, {
+                    fileReader,
+                    data
+                }), false);
                 fileReader.addEventListener('error', reject.bind(this), false);
                 fileReader.readAsDataURL(data.file);
             });
-        },
-
-        /**
-         * Discovers data field identifier where the file meta data will be stored
-         *
-         * @method _discoverDataFieldIdentifier
-         * @protected
-         * @return {String} data field identifier
-         */
-        _discoverDataFieldIdentifier: function () {
-            return this._detectedContentTypeMapping.contentFieldIdentifier;
-        },
-
-        /**
-         * Discovers name field identifier
-         *
-         * @method _discoverNameFieldIdentifier
-         * @protected
-         * @return {String} name field identifier
-         */
-        _discoverNameFieldIdentifier: function () {
-            return this._detectContentTypeMapping.nameFieldIdentifier || 'name';
         },
 
         /**
@@ -629,14 +600,19 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          *
          * @method _updateContentStructWithFileMeta
          * @protected
-         * @param data {Object} data hash
+         * @param input {Object} file input
+         * @param input.data {Object} data hash
+         * @param input.fileReader {FileReader} FileReader object
          * @return {Object} updated data hash
          */
-        _updateContentStructWithFileMeta: function (data) {
-            data.struct.addField(this._discoverNameFieldIdentifier(), data.file.name);
-            data.struct.addField(this._discoverDataFieldIdentifier(), {
+        _updateContentStructWithFileMeta: function (input) {
+            const data = input.data;
+            const detectedMapping = this._detectContentTypeMapping(input.data.file);
+
+            data.struct.addField((detectedMapping.nameFieldIdentifier || 'name'), data.file.name);
+            data.struct.addField(detectedMapping.contentFieldIdentifier, {
                 fileName: data.file.name,
-                data: this.get('fileReader').result.replace(/^.*;base64,/, ''),
+                data: input.fileReader.result.replace(/^.*;base64,/, ''),
             });
 
             return data;
@@ -797,18 +773,6 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
              */
             contentTypeByLocationMappings: {
                 value: [],
-                readOnly: true
-            },
-
-            /**
-             * FileReader object instance
-             *
-             * @attribute fileReader
-             * @type {FileReader}
-             * @readOnly
-             */
-            fileReader: {
-                valueFn: () => new FileReader(),
                 readOnly: true
             },
         }
