@@ -61,30 +61,30 @@ class ContentTypeMappings
                 'mappings' => [],
             ];
 
-            foreach ($locationConfiguration['mappings'] as $mapping) {
-                $structure['locationMappings'][$locationIdentifier]['mappings'][] = $this->buildMappingStructure($mapping);
+            foreach ($locationConfiguration['mappings'] as $mappingGroup) {
+                $structure['locationMappings'][$locationIdentifier]['mappings'][] = $this->buildMappingGroupStructure($mappingGroup);
             }
         }
 
-        foreach ($this->defaultMappings as $mapping) {
-            $structure['defaultMappings'][] = $this->buildMappingStructure($mapping);
+        foreach ($this->defaultMappings as $mappingGroup) {
+            $structure['defaultMappings'][] = $this->buildMappingGroupStructure($mappingGroup);
         }
 
         return $structure;
     }
 
     /**
-     * @param array $mapping
+     * @param array $mappingGroup
      *
      * @return array
      */
-    private function buildMappingStructure(array $mapping)
+    private function buildMappingGroupStructure(array $mappingGroup)
     {
         return [
-            'mimeType' => $mapping['mime_type'],
-            'contentTypeIdentifier' => $mapping['content_type_identifier'],
-            'contentFieldIdentifier' => $mapping['content_field_identifier'],
-            'nameFieldIdentifier' => $mapping['name_field_identifier'],
+            'mimeTypes' => $mappingGroup['mime_types'],
+            'contentTypeIdentifier' => $mappingGroup['content_type_identifier'],
+            'contentFieldIdentifier' => $mappingGroup['content_field_identifier'],
+            'nameFieldIdentifier' => $mappingGroup['name_field_identifier'],
         ];
     }
 
