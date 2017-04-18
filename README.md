@@ -1,1 +1,1 @@
-# ezplatform-ee-multi-file-upload
+# ezplatform-multi-file-upload
