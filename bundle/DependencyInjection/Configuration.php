@@ -133,7 +133,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->integerNode('max_file_size')
                     ->defaultValue(64000000) // 64MB
-                    ->cannotBeEmpty()
                 ->end()
             ->end()
         ;
