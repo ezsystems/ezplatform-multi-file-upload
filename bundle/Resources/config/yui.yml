@@ -4,7 +4,7 @@ system:
             modules:
                 mfu-text-format-helper:
                     requires: ['base']
-                    path: %multifile_upload.public_dir%/js/helpers/mfu-text-format-helper.js
+                    path: '%multifile_upload.public_dir%/js/helpers/mfu-text-format-helper.js'
                 mfu-fileupload-plugin:
                     requires:
                         - 'plugin'
@@ -17,7 +17,7 @@ system:
                     dependencyOf:
                         - 'ez-locationviewview'
                         - 'ez-locationviewviewservice'
-                    path: %multifile_upload.public_dir%/js/plugins/mfu-fileupload-plugin.js
+                    path: '%multifile_upload.public_dir%/js/plugins/mfu-fileupload-plugin.js'
                 mfu-subitembox-view:
                     requires:
                         - 'mfu-uploadform-view'
@@ -25,20 +25,20 @@ system:
                         - 'ez-subitemboxview'
                         - 'ez-translator'
                         - 'mfusubitemboxview-ez-template'
-                    path: %multifile_upload.public_dir%/js/views/mfu-subitembox-view.js
+                    path: '%multifile_upload.public_dir%/js/views/mfu-subitembox-view.js'
                 mfusubitemboxview-ez-template:
                     type: 'template'
-                    path: %multifile_upload.public_dir%/templates/subitem-box.hbt
+                    path: '%multifile_upload.public_dir%/templates/subitem-box.hbt'
                 mfu-uploadform-view:
                     requires:
                         - 'ez-templatebasedview'
                         - 'ez-translator'
                         - 'mfu-text-format-helper'
                         - 'mfuuploadformview-ez-template'
-                    path: %multifile_upload.public_dir%/js/views/mfu-uploadform-view.js
+                    path: '%multifile_upload.public_dir%/js/views/mfu-uploadform-view.js'
                 mfuuploadformview-ez-template:
                     type: 'template'
-                    path: %multifile_upload.public_dir%/templates/upload-form.hbt
+                    path: '%multifile_upload.public_dir%/templates/upload-form.hbt'
                 mfu-uploadpopup-view:
                     requires:
                         - 'mfu-uploadform-view'
@@ -46,17 +46,17 @@ system:
                         - 'event-tap'
                         - 'ez-translator'
                         - 'mfuuploadpopupview-ez-template'
-                    path: %multifile_upload.public_dir%/js/views/mfu-uploadpopup-view.js
+                    path: '%multifile_upload.public_dir%/js/views/mfu-uploadpopup-view.js'
                 mfuuploadpopupview-ez-template:
                     type: 'template'
-                    path: %multifile_upload.public_dir%/templates/upload-popup.hbt
+                    path: '%multifile_upload.public_dir%/templates/upload-popup.hbt'
                 mfu-fileitem-view:
                     requires:
                         - 'ez-templatebasedview'
                         - 'ez-translator'
                         - 'mfu-text-format-helper'
                         - 'mfufileitemview-ez-template'
-                    path: %multifile_upload.public_dir%/js/views/mfu-fileitem-view.js
+                    path: '%multifile_upload.public_dir%/js/views/mfu-fileitem-view.js'
                 mfufileitemview-ez-template:
                     type: 'template'
-                    path: %multifile_upload.public_dir%/templates/file-item.hbt
+                    path: '%multifile_upload.public_dir%/templates/file-item.hbt'
