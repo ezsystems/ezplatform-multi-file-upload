@@ -80,6 +80,11 @@ YUI.add('mfu-uploadform-view', function (Y) {
                 return;
             }
 
+            if (this.get('checkPermissionPrevented')) {
+                this._setFormActiveState(true);
+                return;
+            }
+
             /**
              * Checks for content create permissions for a logged in user.
              * Listened by {{#crossLink "mfu.Plugin.FileUploadService"}}mfu.Plugin.FileUploadService{{/crossLink}}
@@ -359,6 +364,19 @@ YUI.add('mfu-uploadform-view', function (Y) {
             checkPermissionsErrorText: {
                 valueFn: () => Y.eZ.trans('file.upload.permissions.check.error', {}, 'uploadform'),
                 readOnly: true,
+            },
+
+            /**
+             * Flag indicating if the permissons check should be ommited.
+             * If set to truthy value user is allowed to create content.
+             *
+             * @attribute checkPermissionPrevented
+             * @type {Boolean}
+             * @writeOnce 'initOnly'
+             */
+            checkPermissionPrevented: {
+                value: false,
+                writeOnce: 'initOnly',
             },
         }
     });

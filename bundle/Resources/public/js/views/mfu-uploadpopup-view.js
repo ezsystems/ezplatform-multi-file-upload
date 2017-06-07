@@ -354,7 +354,8 @@ YUI.add('mfu-uploadpopup-view', function (Y) {
                 valueFn: function () {
                     return new Y.mfu.UploadFormView({
                         bubbleTargets: this,
-                        onDropCallback: this._updateUploadedFilesList.bind(this)
+                        onDropCallback: this._updateUploadedFilesList.bind(this),
+                        checkPermissionPrevented: true
                     });
                 },
                 readOnly: true,
