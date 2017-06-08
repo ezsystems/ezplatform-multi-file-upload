@@ -41,21 +41,19 @@ class RestController
     }
 
     /**
-     * @param int $contentTypeId
      * @param int $parentLocationId
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport
      */
-    public function checkPermission($contentTypeId, $parentLocationId, Request $request)
+    public function checkPermission($parentLocationId, Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
             throw new BadRequestHttpException('The request is not an AJAX request');
         }
 
-        $contentType = $this->contentTypeService->loadContentType($contentTypeId);
         $parentLocation = $this->locationService->loadLocation($parentLocationId);
 
-        return $this->permissionReportService->canUserCreateContent($contentType, $parentLocation);
+        return $this->permissionReportService->canUserCreateContent($parentLocation);
     }
 }

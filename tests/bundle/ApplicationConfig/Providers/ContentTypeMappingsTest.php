@@ -38,7 +38,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
                 'mappings' => [
                     [
                         'mime_types' => [
-                            'application/msword'
+                            'application/msword',
                         ],
                         'content_type_identifier' => 'file',
                         'content_field_identifier' => 'file',
@@ -51,7 +51,7 @@ class ContentTypeMappingsTest extends \PHPUnit_Framework_TestCase
             [
                 'mime_types' => [
                     'application/msword',
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 ],
                 'content_type_identifier' => 'file',
                 'content_field_identifier' => 'file',
