@@ -21,7 +21,11 @@ services:
         arguments:
             - '@ez_systems.multifile_upload.service.permission_resolver'
             - '@ezpublish.api.service.content'
+            - '@ezpublish.api.service.content_type'
             - '@ezpublish.api.service.location'
+            - '%ez_systems.multifile_upload.location_mappings%'
+            - '%ez_systems.multifile_upload.default_mappings%'
+            - '%ez_systems.multifile_upload.fallback_content_type%'
 
     ez_systems.multifile_upload.controller.rest:
         class: '%ez_systems.multifile_upload.controller.rest.class%'
@@ -30,7 +34,7 @@ services:
             - '@ezpublish.api.service.location'
             - '@ez_systems.multifile_upload.service.permission_report'
 
-    # todo: remove once kernel bundle exposes PermissionResolver as a DI service
+    # todo: remove once kernel exposes PermissionResolver as a DI service
     ez_systems.multifile_upload.service.permission_resolver:
         class: '%ez_systems.multifile_upload.service.permission_resolver.class%'
         factory: ['@ezpublish.api.inner_repository', 'getPermissionResolver']

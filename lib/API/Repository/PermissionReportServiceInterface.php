@@ -17,11 +17,10 @@ interface PermissionReportServiceInterface
     /**
      * Returns PermissionReport regarding content:create permission for the contentType in location.
      *
-     * @param \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType
      * @param \eZ\Publish\API\Repository\Values\Content\Location $parentLocation
      * @param \eZ\Publish\API\Repository\Values\User\UserReference $userReference
      *
      * @return \EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport
      */
-    public function canUserCreateContent(ContentType $contentType, Location $parentLocation, UserReference $userReference = null);
+    public function canUserCreateContent(Location $parentLocation, UserReference $userReference = null);
 }

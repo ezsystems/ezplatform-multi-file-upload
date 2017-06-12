@@ -265,37 +265,11 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @param event.errorCallback {Function} an error callback
          */
         _checkContentCreatePermissions: function (event) {
-            const defaultContentTypeIdentifier = this.get('defaultContentType').contentTypeIdentifier;
-            const locationIdentifier = this.get('host').get('contentType').get('identifier');
-            const locationMappings = this.get('contentTypeByLocationMappings');
-            const mappedLocation = locationMappings.find(item => item.contentTypeIdentifier === locationIdentifier);
-            const uniqueIdentifiers = mappedLocation ? [...new Set(mappedLocation.mappings.map(item => item.contentTypeIdentifier))] : [];
-            let promises = [];
-
-            if (uniqueIdentifiers.length) {
-                promises = uniqueIdentifiers.map(identifier => this._loadContentTypeByIdentifier(identifier));
-            } else {
-                promises = [this._loadContentTypeByIdentifier(defaultContentTypeIdentifier)];
-            }
-
-            Promise.all(promises)
-                .then(this._checkContentCreatePermissionByContentType.bind(this))
-                .then(this._setContentCreatePermissionsState.bind(this, event.permissionsStateCallback))
-                .catch(event.errorCallback);
-        },
-
-        /**
-         * Checks permissions for creating content of specific content types
-         *
-         * @method _checkContentCreatePermissionByContentType
-         * @protected
-         * @param data {Array} a list of resolved promises
-         * @return {Promise}
-         */
-        _checkContentCreatePermissionByContentType: function (data) {
             const locationId = this.get('host').get('location').get('locationId');
 
-            return Promise.all(data.map(this._makeCheckPermissionsRequest.bind(this, locationId)))
+            this._makeCheckPermissionsRequest(locationId)
+                .then(this._setContentCreatePermissionsState.bind(this, event.permissionsStateCallback))
+                .catch(event.errorCallback);
         },
 
         /**
@@ -304,12 +278,10 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @method _makeCheckPermissionsRequest
          * @protected
          * @param locationId {Number} non-REST location id
-         * @param response {Object} load content type by identifier REST request response
          * @return {Promise}
          */
-        _makeCheckPermissionsRequest: function (locationId, response) {
-            const contentTypeId = response.document.ContentTypeInfoList.ContentType[0].id;
-            const url = `api/ezp/v2/multifileupload/v1/check-permission/${locationId}/${contentTypeId}`;
+        _makeCheckPermissionsRequest: function (locationId) {
+            const url = `api/ezp/v2/multifileupload/v1/check-permission/${locationId}`;
 
             return new Promise((resolve, reject) => {
                 this.get('host')
@@ -333,7 +305,7 @@ YUI.add('mfu-fileupload-plugin', function (Y) {
          * @param permissions {Array} a list of resolved content type content create permission checks
          */
         _setContentCreatePermissionsState: function (callback, permissions) {
-            const isContentCreateAllowed = permissions.some(item => item.document.PermissionReport.allowed);
+            const isContentCreateAllowed = !!permissions.document.PermissionReport.allowedContentTypes.length;
 
             callback(isContentCreateAllowed);
         },

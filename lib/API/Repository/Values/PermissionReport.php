@@ -10,9 +10,6 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 class PermissionReport extends ValueObject
 {
     /** @var int */
-    public $contentTypeId;
-
-    /** @var int */
     public $parentLocationId;
 
     /** @var string */
@@ -21,6 +18,6 @@ class PermissionReport extends ValueObject
     /** @var string */
     public $function;
 
-    /** @var bool */
-    public $allowed;
+    /** @var string[] */
+    public $allowedContentTypes;
 }

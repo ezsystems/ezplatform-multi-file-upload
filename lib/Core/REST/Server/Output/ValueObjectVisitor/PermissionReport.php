@@ -25,17 +25,18 @@ class PermissionReport extends ValueObjectVisitor
         $generator->startValueElement('parentLocationId', $data->parentLocationId);
         $generator->endValueElement('parentLocationId');
 
-        $generator->startValueElement('contentTypeId', $data->contentTypeId);
-        $generator->endValueElement('contentTypeId');
-
         $generator->startValueElement('module', $data->module);
         $generator->endValueElement('module');
 
         $generator->startValueElement('function', $data->function);
         $generator->endValueElement('function');
 
-        $generator->startValueElement('allowed', $data->allowed);
-        $generator->endValueElement('allowed');
+        $generator->startList('allowedContentTypes');
+        foreach ($data->allowedContentTypes as $contentTypeIdentifier) {
+            $generator->startValueElement('allowedContentTypes', $contentTypeIdentifier);
+            $generator->endValueElement('allowedContentTypes');
+        }
+        $generator->endList('allowedContentTypes');
 
         $generator->endObjectElement('PermissionReport');
     }
