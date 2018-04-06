@@ -9,6 +9,9 @@ use eZ\Publish\API\Repository\Values\ValueObject;
 
 class PermissionReport extends ValueObject
 {
+    /** @var \eZ\Publish\API\Repository\Values\Content\Location */
+    public $parentLocation;
+
     /** @var int */
     public $parentLocationId;
 
