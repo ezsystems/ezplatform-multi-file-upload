@@ -106,6 +106,7 @@ class PermissionReportService implements PermissionReportServiceInterface
         }
 
         return new PermissionReport([
+            'parentLocation' => $parentLocation,
             'parentLocationId' => $parentLocation->id,
             'module' => 'content',
             'function' => 'create',
